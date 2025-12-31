@@ -1,4 +1,4 @@
-# [INSERISCI NOME PROGETTO QUI] - Gestione Collaborativa Unità Abitative
+# Progetto Web - Gestione Collaborativa Unità Abitative
 
 ## 📖 Descrizione del Progetto
 L’applicazione web fornisce un servizio di gestione collaborativa delle unità abitative studentesche, permettendo ai coinquilini di organizzare in modo semplice e condiviso le attività comuni.
@@ -74,4 +74,5 @@ Idee aggiuntive per migliorare l'engagement e l'accessibilità (Target: 4/4 punt
 
 4.  **Dark Mode Automatica 🌙**
     * Rilevamento delle preferenze di sistema dell'utente tramite JS per switch automatico del tema grafico.
+
     * *Obiettivo:* Design inclusivo e moderno.# progettoWeb
