@@ -10,17 +10,21 @@
     </head>
 
 <body class="bg-white d-flex flex-column min-vh-100">
-<nav class="navbar navbar-expand-lg bg-dark sticky-top">
+<nav class="navbar navbar-expand-lg bg-dark sticky-top navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-white" href="#">🏠 CoHappy</a>
+            <a class="navbar-brand fw-bold " href="#">🏠 CoHappy</a>
+            <!--
+                data-bs-toggle serve per dire a js di far partire l'effetto collapse
+                data-bs-target invece dice quale classe prendere 
+            -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav"> <!--classe per il menù a tendina-->
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active text-white" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="annunci.html">Annunci</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="contatti.html">Contatti</a></li>
+                    <li class="nav-item"><a class="nav-link active " href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link " href="annunci.html">Annunci</a></li>
+                    <li class="nav-item"><a class="nav-link " href="contatti.html">Contatti</a></li>
                 </ul>
                 <div class="d-flex">
                     <a href="login.html" class="btn btn-light text-primary fw-bold text-black">Login</a>
@@ -30,14 +34,21 @@
     </nav>
 
     <main class="flex-grow-1">
-        <div class="text-center my-5 pt-1"><h2 class="fw-bold">Benvenuto su CoHappy</h2>
-        <p class="text-muted fw-bold mb-3">La piattaforma ideale per gestire la tua vita da studente fuori sede. Organizza spese, pulizie e trova i coinquilini perfetti.</p></div>
-        
-        <section class="bg-light py-3 mx-2 px-3">
-            <h3 class="text-center mb-4">Perché sceglierci?</h3>
+        <header class="hero-section text-center bg-light pt-3">
+            <div class="container pb-4">
+                <h1 class="display-4 fw-bold ">Benvenuto su CoHappy</h1>
+                <p class="mb-4">La piattaforma ideale per gestire la tua vita da studente fuori sede. <br>Organizza spese, pulizie e trova i coinquilini perfetti.</p>
+                <a href="login.html" class="btn btn-dark btn-lg px-4">Inizia ora</a>
+                <a href="annunci.html" class="btn btn-outline-secondary btn-lg px-4">Cerca stanza</a>
+            </div>
+        </header>
+
+        <section class="py-3 mx-2 px-3 rounded-4">
+            <h3 class="text-center my-4">Perché sceglierci?</h3>
             <div class="row mb-4">
                 <div class="col-md-4 mb-2">
-                    <div class="card text-center p-4 shadow-sm border-0 h-100">
+                    <div class="card text-center p-4 shadow-sm border-0 h-100 ">
+                        <div class="fs-3 mb-2">🛒</div>
                         <div class="card-title"><h5>Gestione delle spese</h5></div>
                         <div class="card-text">Basta litigare per gli scontrini! Gestisci automaticamente le spese tra coinquilini</div>
                     </div>
@@ -45,6 +56,7 @@
 
                 <div class="col-md-4 mb-2">
                     <div class="card text-center p-4 shadow-sm border-0 h-100">
+                        <div class="fs-3 mb-2">🗓️</div>
                         <div class="card-title"><h5>Calendario turni pulizie</h5></div>
                         <div class="card-text">Niente più scuse per il tuo conquilino che dice sempre <em>"ma non era il mio turno"</em> puoi mettere a calendario il malcapitato a cui tocca pulire</div>
                     </div>
@@ -52,6 +64,7 @@
 
                 <div class="col-md-4 mb-2">
                     <div class="card text-center p-4 shadow-sm border-0 h-100">
+                        <div class="fs-3 mb-2">📌</div>
                         <div class="card-title"><h5>Bacheca annunci</h5></div>
                         <div class="card-text">Trova il coinquilino o la stanza perfetta per te tramite la nostra bacheca</div>
                     </div>
@@ -62,11 +75,20 @@
     </main>
     <aside>
         <section>
-            <h2>Ultime Novità</h2>
-            <p>Nuova funzione: Forum interno per ogni unità abitativa!</p>
+            <div class="row align-items-center justify-content-center mx-4">
+                <div class="my-4 bg-light rounded-4 py-3 px-4 shadow-sm row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="pt-2">Ultime Novità</h4>
+                        <p class="col-md-0">Forum interno per ogni unità abitativa!</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="annunci.html" class="btn bg-dark text-white px-4 h-30">Scopri di più</a>
+                    </div>
+                </div> 
+            </div>
         </section>
     </aside>
-    <footer  class="bg-dark text-white text-center py-3 mt-auto"><div class="container"> CoHappy - limited 2026</div></footer>
-    </body>
-    
+        <footer  class="bg-dark text-white text-center py-3 mt-auto"><div class="container"> CoHappy - limited 2026</div></footer>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </body>    
 </html>
