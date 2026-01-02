@@ -18,5 +18,16 @@ class DatabaseHelper {
         
         return $stmt->execute();
     }
+    
+    public function getRandomAnnunci($n) {
+    // Seleziona n annunci in ordine casuale
+    $query = "SELECT * FROM annunci ORDER BY RAND() LIMIT ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $n);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 }
 ?>
