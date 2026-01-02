@@ -47,7 +47,7 @@
                             <span class="badge rounded-pill border text-dark">#LGBTQ+Friendly</span>
                         </div>
                         <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#candidaturaModal">
-                            Candidati ora
+                            Contattaci!!
                         </button>
                     </div>
                 </div>
@@ -63,22 +63,23 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form method="POST" action="risposta.php" enctype="multipart/form-data">
+                        <input type="hidden" name="id_annuncio" value="1">
                         <div class="mb-3">
                             <label class="form-label">Nome Completo</label>
-                            <input type="text" class="form-control" required>
+                            <input type="text" id="nome" name="nome" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" required>
+                            <input type="email" id="email" name="email" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Perché vuoi vivere qui?</label>
-                            <textarea class="form-control" rows="3"></textarea>
+                            <label class="form-label">Parlaci di te</label>
+                            <textarea class="form-control" rows="3" id="messaggio" name="messaggio"></textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Carica una tua foto (opzionale)</label>
-                            <input type="file" class="form-control">
+                            <input type="file" id="foto" name="foto" class="form-control">
                         </div>
                         <button type="submit" class="btn btn-success w-100">Invia Messaggio</button>
                     </form>
