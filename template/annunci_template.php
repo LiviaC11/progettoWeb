@@ -33,57 +33,55 @@
         </section>
 
         <section class="row g-4">
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="Stanza luminosa">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h5 class="card-title">Stanza Singola - Centro</h5>
-                            <span class="badge bg-success">450€/mese</span>
-                        </div>
-                        <p class="card-text text-muted small">Libera da Febbraio. Cerchiamo studente pulito e socievole.</p>
-                        <div class="mb-3">
-                            <span class="badge rounded-pill border text-dark">#StudioIntenso</span>
-                            <span class="badge rounded-pill border text-dark">#LGBTQ+Friendly</span>
-                        </div>
-                        <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#candidaturaModal">
-                            Contattaci!!
-                        </button>
+    <?php foreach($templateParams["annunci"] as $annuncio): ?>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="<?php echo $annuncio['titolo']; ?>">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title"><?php echo $annuncio['titolo']; ?></h5>
+                        <span class="badge bg-success"><?php echo $annuncio['prezzo']; ?>€/mese</span>
                     </div>
-                </div>
-            </div>
-            </section>
-    </main>
-
-    <div class="modal fade" id="candidaturaModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Invia Candidatura</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="risposta.php" enctype="multipart/form-data">
-                        <input type="hidden" name="id_annuncio" value="1">
-                        <div class="mb-3">
-                            <label class="form-label">Nome Completo</label>
-                            <input type="text" id="nome" name="nome" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" id="email" name="email" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Parlaci di te</label>
-                            <textarea class="form-control" rows="3" id="messaggio" name="messaggio"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Carica una tua foto (opzionale)</label>
-                            <input type="file" id="foto" name="foto" class="form-control">
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Invia Messaggio</button>
-                    </form>
+                    <p class="card-text text-muted small"><?php echo $annuncio['descrizione']; ?></p>
+                    
+                    <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modal-<?php echo $annuncio['id_annuncio']; ?>">
+                        Contattaci!!
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="modal fade" id="modal-<?php echo $annuncio['id_annuncio']; ?>" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Candidatura per: <?php echo $annuncio['titolo']; ?></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="risposta.php" enctype="multipart/form-data">
+                            <input type="hidden" name="id_annuncio" value="<?php echo $annuncio['id_annuncio']; ?>">
+                            <div class="mb-3">
+                                <label class="form-label">Nome Completo</label>
+                                <input type="text" name="nome" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Parlaci di te</label>
+                                <textarea name="messaggio" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Carica una tua foto</label>
+                                <input type="file" name="foto" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Invia Candidatura</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</section>
