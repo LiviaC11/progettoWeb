@@ -1,0 +1,7 @@
+
+    body {
+        /* Blocca lo scroll orizzontale se qualcosa esce dai bordi */
+        overflow-x: hidden; 
+        /* Opzionale: rende lo scroll verticale più fluido */
+        scroll-behavior: smooth; 
+    }

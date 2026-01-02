@@ -1,37 +1,3 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <title>CoHappy - Cerca Coinquilini</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-    <header class="p-3 bg-light border-bottom">
-        <div class="container text-center">
-            <h1 class="h3">CoHappy</h1>
-            <p class="small mb-0">Trova la tua stanza, senza stress.</p>
-        </div>
-    </header>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-        <div class="container">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="annunci.html">Annunci</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contatti.html">Contatti</a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
     <main class="container my-4">
         <h2 class="mb-4 text-center">Annunci Disponibili</h2>
 
@@ -60,7 +26,7 @@
                         </div>
                     </div>
                     <div class="col-12 text-center">
-                        <button type="submit" class="btn btn-primary w-100">Filtra Risultati</button>
+                        <button type="submit" class="btn btn-dark w-100">Filtra Risultati</button>
                     </div>
                 </form>
             </div>
@@ -120,11 +86,3 @@
             </div>
         </div>
     </div>
-
-    <footer class="bg-dark text-white text-center p-3 mt-5">
-        CoHappy - Limited 2026
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
