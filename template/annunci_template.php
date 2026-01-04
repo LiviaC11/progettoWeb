@@ -1,4 +1,4 @@
-    <main class="container my-4">
+    <div class="container my-4">
         <h2 class="mb-4 text-center">Annunci Disponibili</h2>
 
         <section class="filters mb-4">

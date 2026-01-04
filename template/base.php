@@ -22,9 +22,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav"> <!--classe per il menù a tendina-->
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active " href="index.php">Home</a></li>
-                    <li class="nav-item"><a class="nav-link " href="annunci.php">Annunci</a></li>
-                    <li class="nav-item"><a class="nav-link " href="contatti.php">Contatti</a></li>
+                    <li class="nav-item"><a class="nav-link <?php isActive("index.php") ?> " href="index.php">Home</a></li>
+                    <li class="nav-item"><a class="nav-link <?php isActive("annunci.php") ?>" href="annunci.php">Annunci</a></li>
+                    <li class="nav-item"><a class="nav-link <?php isActive("contatti.php") ?>" href="contatti.php">Contatti</a></li>
                 </ul>
                 <div class="d-flex">
                     <a href="login.php" class="btn btn-light text-primary fw-bold text-black">Login</a>
