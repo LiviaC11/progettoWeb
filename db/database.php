@@ -57,5 +57,40 @@ public function getPulizieByCasa($id_casa){
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 }
+
+public function registerToExistingHouse($nome, $cognome, $email, $password, $codice) {
+    
+    $queryCasa = "SELECT id_casa FROM `case` WHERE codice_invito = ?";
+    $stmt = $this->db->prepare($queryCasa);
+    $stmt->bind_param('s', $codice);
+    $stmt->execute();
+    $id_casa = $stmt->get_result()->fetch_assoc()['id_casa'] ?? null;
+
+    if(!$id_casa) return false;
+
+    
+    $queryUser = "INSERT INTO utenti (nome, cognome, email, password, ruolo, id_casa) VALUES (?, ?, ?, ?, 'studente', ?)";
+    $stmtU = $this->db->prepare($queryUser);
+    $stmtU->bind_param('ssssi', $nome, $cognome, $email, $password, $id_casa);
+    
+    return $stmtU->execute() ? $this->db->insert_id : false;
+}
+
+public function registerWithNewHouse($nome, $cognome, $email, $password, $nome_casa) {
+    // Alla casa creata viene assegnato un codice casuale
+    $codice = strtoupper(substr(md5(time()), 0, 8));
+    $queryC = "INSERT INTO `case` (nome_casa, codice_invito) VALUES (?, ?)";
+    $stmtC = $this->db->prepare($queryC);
+    $stmtC->bind_param('ss', $nome_casa, $codice);
+    $stmtC->execute();
+    $id_casa = $this->db->insert_id;
+
+    // L'utente che carica la casa è l'admin
+    $queryU = "INSERT INTO utenti (nome, cognome, email, password, ruolo, id_casa) VALUES (?, ?, ?, ?, 'admin_casa', ?)";
+    $stmtU = $this->db->prepare($queryU);
+    $stmtU->bind_param('ssssi', $nome, $cognome, $email, $password, $id_casa);
+    
+    return $stmtU->execute() ? $this->db->insert_id : false;
+}
 }
 ?>
