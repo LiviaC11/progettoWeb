@@ -28,8 +28,9 @@
                 </ul>
                 <div class="d-flex">
                     <?php if(isset($_SESSION["id_utente"])): ?>
-                        <span class="text-white me-3 small">Ciao, <strong><?php echo $_SESSION["nome"]; ?></strong></span>
-                        <a href="logout.php" class="btn btn-outline-light btn-sm fw-bold">Logout</a>
+                        <a href="dashboard.php" class="text-white text-decoration-none me-3 small">Ciao, <strong><?php echo $_SESSION["nome"]; ?></strong>
+                        </a>
+<a href="logout.php" class="btn btn-outline-light btn-sm fw-bold">Logout</a>
                     <?php else: ?>
                         <a href="login.php" class="btn btn-light text-primary fw-bold text-black">Login</a>
                     <?php endif; ?>
@@ -40,7 +41,7 @@
 
         <main class="flex-grow-1">
     <?php
-        // Qui avviene la magia: carica il file specifico (home, login, ecc)
+        // carica il file specifico (home, login, ecc)
         if(isset($templateParams["nome"])){
             require($templateParams["nome"]);
         }
