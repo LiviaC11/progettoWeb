@@ -24,7 +24,7 @@ Senza questo non possiamo fare nulla di dinamico. Mancano le tabelle su phpMyAdm
 
   - id_casa (INT, FK -> case)
 
-- [ ] Tabella case (Unità Abitative):
+- [x] Tabella case (Unità Abitative):
 
   - id_casa (INT, AI, PK)
 
@@ -32,7 +32,7 @@ Senza questo non possiamo fare nulla di dinamico. Mancano le tabelle su phpMyAdm
 
   - codice_invito (VARCHAR, UNIQUE)
 
-- [ ] Tabella annunci:
+- [x] Tabella annunci:
 
   - id_annuncio (INT, AI, PK)
 
@@ -48,7 +48,7 @@ Senza questo non possiamo fare nulla di dinamico. Mancano le tabelle su phpMyAdm
 
   - id_utente (INT, FK -> utenti)
 
-- [ ] Tabella spese (CRUD 1):
+- [x] Tabella spese (CRUD 1):
 
   - id_spesa (INT, AI, PK)
 
@@ -62,7 +62,7 @@ Senza questo non possiamo fare nulla di dinamico. Mancano le tabelle su phpMyAdm
 
   - id_casa (INT, FK -> case)
 
-- [ ] Tabella pulizie (CRUD 2 / WOW):
+- [x] Tabella pulizie (CRUD 2 / WOW):
 
   - id_turno (INT, AI, PK)
 
@@ -77,7 +77,7 @@ Senza questo non possiamo fare nulla di dinamico. Mancano le tabelle su phpMyAdm
 ## 💻 2. Interfacce Mancanti (Frontend)
 Attualmente hai solo Home, Annunci e Contatti. Servono le pagine funzionali.
 
-- [ ] Registrazione (registrazione.php):
+- [x] Registrazione (registrazione.php):
 
   - Form per creare account.
 
@@ -100,10 +100,6 @@ Attualmente hai solo Home, Annunci e Contatti. Servono le pagine funzionali.
   - Tabella turni pulizie.
 
   - Bottone "Aggiungi Spesa" / "Assegna Turno".
-
-- [ ] Profilo (profilo.php):
-
-  - Modifica foto, cambia password.
 
 ## ⚙️ 3. Logica PHP (Backend)
 Qui si prendono i punti veri (8 punti CRUD + 4 punti Auth).
