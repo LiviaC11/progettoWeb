@@ -9,6 +9,10 @@ class DatabaseHelper {
             die("Connessione fallita: " . $this->db->connect_error);
         }
     }
+
+    //AUTENTIFICAZIONE
+
+    //verifica pw ed email ed avvia sessione
     public function checkLogin($email, $password) {
         $query = "SELECT id_utente, nome, email, password, ruolo, id_casa FROM utenti WHERE email = ?";
         $stmt = $this->db->prepare($query);
@@ -23,42 +27,9 @@ class DatabaseHelper {
         }
         return false;
     }
-    // inseririmento nuova candidatura
-    public function insertCandidatura($id_annuncio, $nome, $email, $messaggio, $foto) {
-        $query = "INSERT INTO candidature (id_annuncio, nome, email, messaggio, foto) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param('issss', $id_annuncio, $nome, $email, $messaggio, $foto);
-        
-        return $stmt->execute();
-    }
-    
-    public function getRandomAnnunci($n) {
-    // Seleziona n annunci in ordine casuale
-    $query = "SELECT a.*, u.nome as nome_proprietario 
-                  FROM annunci a 
-                  LEFT JOIN utenti u ON a.id_utente = u.id_utente 
-                  ORDER BY RAND() LIMIT ?";
-    $stmt = $this->db->prepare($query);
-    $stmt->bind_param('i', $n);
-    $stmt->execute();
-    $result = $stmt->get_result();
 
-    return $result->fetch_all(MYSQLI_ASSOC);
-}
-public function getPulizieByCasa($id_casa){
-    $query= "SELECT t.*, u.nome as assegnato_a_nome
-             FROM turni_pulizie t
-             JOIN utenti u ON t.assegnato_a = u.id_utente
-             WHERE t.id_casa = ?
-             ORDER BY t.data_scadenza ASC";
-    $stmt= $this->db->prepare($query);
-    $stmt->bind_param('i', $id_casa);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-}
-
-public function registerToExistingHouse($nome, $cognome, $email, $password, $codice) {
+    //registra un utente grazie al codice di invito in una casa già creata
+    public function registerToExistingHouse($nome, $cognome, $email, $password, $codice) {
     
     $queryCasa = "SELECT id_casa FROM `case` WHERE codice_invito = ?";
     $stmt = $this->db->prepare($queryCasa);
@@ -67,7 +38,6 @@ public function registerToExistingHouse($nome, $cognome, $email, $password, $cod
     $id_casa = $stmt->get_result()->fetch_assoc()['id_casa'] ?? null;
 
     if(!$id_casa) return false;
-
     
     $queryUser = "INSERT INTO utenti (nome, cognome, email, password, ruolo, id_casa) VALUES (?, ?, ?, ?, 'studente', ?)";
     $stmtU = $this->db->prepare($queryUser);
@@ -76,8 +46,8 @@ public function registerToExistingHouse($nome, $cognome, $email, $password, $cod
     return $stmtU->execute() ? $this->db->insert_id : false;
 }
 
+//crea una nuova casa e registra l'utente come admin
 public function registerWithNewHouse($nome, $cognome, $email, $password, $nome_casa) {
-    // Alla casa creata viene assegnato un codice casuale
     $codice = strtoupper(substr(md5(time()), 0, 8));
     $queryC = "INSERT INTO `case` (nome_casa, codice_invito) VALUES (?, ?)";
     $stmtC = $this->db->prepare($queryC);
@@ -92,6 +62,8 @@ public function registerWithNewHouse($nome, $cognome, $email, $password, $nome_c
     
     return $stmtU->execute() ? $this->db->insert_id : false;
 }
+
+//FUNZIONALITA' UTENTE
 
 //Recupera tutti i dati di un utente partendo dal suo ID.
 public function getUserById($id_utente) {
@@ -120,6 +92,8 @@ public function updateUserPhoto($id_utente, $foto) {
         
         return $stmt->execute();
     }
+
+//DASHBOARD
 
 // Recupera la classifica della casa (Punti)
 public function getHouseRanking($id_casa) {
@@ -153,6 +127,54 @@ public function getNextCleaningTurn($id_casa) {
     return $stmt->get_result()->fetch_assoc();
 }
 
+//SPESE
+
+public function insertSpesa($descrizione, $importo, $data, $chi_ha_pagato, $id_casa) {
+    $query = "INSERT INTO spese (descrizione, importo, data_spesa, chi_ha_pagato, id_casa) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('sdsii', $descrizione, $importo, $data, $chi_ha_pagato, $id_casa);
+    
+    return $stmt->execute();
+}
+
+//x recuperare storico delle spese
+public function getSpeseByCasa($id_casa) {
+    $query = "SELECT s.*, u.nome FROM spese s 
+              JOIN utenti u ON s.chi_ha_pagato = u.id_utente 
+              WHERE s.id_casa = ? ORDER BY s.data_spesa DESC";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_casa);
+    $stmt->execute();
+    
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+//ANNUNCI
+
+    // risposta ad un annuncio
+    public function insertCandidatura($id_annuncio, $nome, $email, $messaggio, $foto) {
+        $query = "INSERT INTO candidature (id_annuncio, nome, email, messaggio, foto) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('issss', $id_annuncio, $nome, $email, $messaggio, $foto);
+        
+        return $stmt->execute();
+    }
+    
+    public function getRandomAnnunci($n) {
+    // Seleziona n annunci in ordine casuale
+    $query = "SELECT a.*, u.nome as nome_proprietario 
+                  FROM annunci a 
+                  LEFT JOIN utenti u ON a.id_utente = u.id_utente 
+                  ORDER BY RAND() LIMIT ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $n);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+//mostra gli annunci creati dall'utente
 public function getAnnunciByUtente($id_utente) {
     $query = "SELECT * FROM annunci WHERE id_utente = ? ORDER BY data_pubblicazione DESC";
     $stmt = $this->db->prepare($query);
@@ -162,5 +184,27 @@ public function getAnnunciByUtente($id_utente) {
 
     return $result->fetch_all(MYSQLI_ASSOC);
 }
+
+
+//PULIZIE
+
+public function getPulizieByCasa($id_casa){
+    $query= "SELECT t.*, u.nome as assegnato_a_nome
+             FROM turni_pulizie t
+             JOIN utenti u ON t.assegnato_a = u.id_utente
+             WHERE t.id_casa = ?
+             ORDER BY t.data_scadenza ASC";
+    $stmt= $this->db->prepare($query);
+    $stmt->bind_param('i', $id_casa);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+}
+
+
+
+
+
+
 }
 ?>
