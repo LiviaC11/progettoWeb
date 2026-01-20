@@ -123,7 +123,7 @@ public function updateUserPhoto($id_utente, $foto) {
 
 // Recupera la classifica della casa (Punti)
 public function getHouseRanking($id_casa) {
-    $query = "SELECT nome, foto, punti FROM utenti WHERE id_casa = ? ORDER BY punti DESC";
+    $query = "SELECT nome, foto_profilo, punti FROM utenti WHERE id_casa = ? ORDER BY punti DESC";
     $stmt = $this->db->prepare($query);
     $stmt->bind_param('i', $id_casa);
     $stmt->execute();
@@ -133,7 +133,7 @@ public function getHouseRanking($id_casa) {
 // Recupera le ultime spese della casa
 public function getRecentExpenses($id_casa, $limit) {
     $query = "SELECT s.*, u.nome as nome_autore FROM spese s 
-              JOIN utenti u ON s.id_utente = u.id_utente 
+              JOIN utenti u ON s.chi_ha_pagato = u.id_utente 
               WHERE s.id_casa = ? ORDER BY s.data_spesa DESC LIMIT ?";
     $stmt = $this->db->prepare($query);
     $stmt->bind_param('ii', $id_casa, $limit);
@@ -143,8 +143,8 @@ public function getRecentExpenses($id_casa, $limit) {
 
 // Recupera il prossimo turno di pulizia
 public function getNextCleaningTurn($id_casa) {
-    $query = "SELECT t.*, u.nome FROM turni t 
-              JOIN utenti u ON t.id_utente = u.id_utente 
+    $query = "SELECT t.*, u.nome FROM turni_pulizie t 
+              JOIN utenti u ON t.assegnato_a = u.id_utente 
               WHERE t.id_casa = ? AND t.completato = 0 
               ORDER BY t.data_scadenza ASC LIMIT 1";
     $stmt = $this->db->prepare($query);

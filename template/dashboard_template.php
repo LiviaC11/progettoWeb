@@ -62,7 +62,7 @@
                         <h4 class="text-primary fw-bold">
                             <?php echo $templateParams["prossimo_turno"]["nome"] ?? "Nessuno assegnato"; ?>
                         </h4>
-                        <p class="small text-muted italic">Zona: <?php echo $templateParams["prossimo_turno"]["zona"] ?? "Generale"; ?></p>
+                        <p class="small text-muted italic">Zona: <?php echo $templateParams["prossimo_turno"]["compito"] ?? "Generale"; ?></p>
                     </div>
                     <a href="casa.php#turni" class="btn btn-outline-dark btn-sm w-100">Gestisci turni</a>
                 </div>

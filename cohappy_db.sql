@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 17, 2026 alle 10:29
+-- Creato il: Gen 20, 2026 alle 11:02
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -123,7 +123,8 @@ CREATE TABLE `utenti` (
   `password` varchar(255) NOT NULL,
   `ruolo` enum('studente','admin_casa','super_admin') DEFAULT 'studente',
   `foto_profilo` varchar(255) DEFAULT 'default_user.png',
-  `id_casa` int(11) DEFAULT NULL
+  `id_casa` int(11) DEFAULT NULL,
+  `punti` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
