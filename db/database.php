@@ -152,5 +152,15 @@ public function getNextCleaningTurn($id_casa) {
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();
 }
+
+public function getAnnunciByUtente($id_utente) {
+    $query = "SELECT * FROM annunci WHERE id_utente = ? ORDER BY data_pubblicazione DESC";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_utente);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 }
 ?>

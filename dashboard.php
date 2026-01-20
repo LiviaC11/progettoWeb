@@ -17,7 +17,8 @@ if (!$id_casa) {
 
 // Recupero dati per la Dashboard
 $templateParams["utente"] = $dbh->getUserById($id_utente);
-$templateParams["classifica"] = $dbh->getHouseRanking($id_casa); // Per Gamification
+$templateParams["miei_annunci"] = $dbh->getAnnunciByUtente($id_utente);
+//$templateParams["classifica"] = $dbh->getHouseRanking($id_casa); 
 $templateParams["spese_recenti"] = $dbh->getRecentExpenses($id_casa, 3);
 $templateParams["prossimo_turno"] = $dbh->getNextCleaningTurn($id_casa);
 
