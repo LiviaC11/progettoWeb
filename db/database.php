@@ -149,6 +149,14 @@ public function getSpeseByCasa($id_casa) {
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+//eliminare spesa
+public function deleteSpesa($id_spesa) {
+    $query = "DELETE FROM spese WHERE id_spesa = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_spesa);
+    return $stmt->execute();
+}
+
 //ANNUNCI
 
     // risposta ad un annuncio
@@ -185,6 +193,26 @@ public function getAnnunciByUtente($id_utente) {
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+//recupera gli annunci di ogni utente pubblicati
+public function getAllAnnunci() {
+    $query = "SELECT a.*, u.nome FROM annunci a JOIN utenti u ON a.id_utente = u.id_utente ORDER BY data_pubblicazione DESC";
+    return $this->db->query($query)->fetch_all(MYSQLI_ASSOC);
+}
+
+//creare un annuncio per utenti registrati
+public function insertAnnuncio($titolo, $descrizione, $prezzo, $luogo, $id_utente) {
+    $query = "INSERT INTO annunci (titolo, descrizione, prezzo, luogo, id_utente) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ssdsi', $titolo, $descrizione, $prezzo, $luogo, $id_utente);
+    return $stmt->execute();
+}
+//eliminare un annuncio
+public function deleteAnnuncio($id_annuncio, $id_utente) {
+    $query = "DELETE FROM annunci WHERE id_annuncio = ? AND id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ii', $id_annuncio, $id_utente);
+    return $stmt->execute();
+}
 
 //PULIZIE
 
@@ -198,7 +226,14 @@ public function getPulizieByCasa($id_casa){
     $stmt->bind_param('i', $id_casa);
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
+// Segna un turno pulizie come completato 
+public function setTurnoCompletato($id_turno) {
+    $query = "UPDATE turni_pulizie SET completato = 1 WHERE id_turno = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_turno);
+    return $stmt->execute();
 }
 
 
