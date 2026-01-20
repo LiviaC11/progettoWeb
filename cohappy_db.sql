@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 20, 2026 alle 11:02
+-- Creato il: Gen 20, 2026 alle 12:10
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -64,6 +64,13 @@ CREATE TABLE `case` (
   `nome_casa` varchar(255) NOT NULL,
   `codice_invito` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `case`
+--
+
+INSERT INTO `case` (`id_casa`, `nome_casa`, `codice_invito`) VALUES
+(2, 'AP007', '99BD152E');
 
 -- --------------------------------------------------------
 
@@ -126,6 +133,13 @@ CREATE TABLE `utenti` (
   `id_casa` int(11) DEFAULT NULL,
   `punti` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `utenti`
+--
+
+INSERT INTO `utenti` (`id_utente`, `nome`, `cognome`, `email`, `password`, `ruolo`, `foto_profilo`, `id_casa`, `punti`) VALUES
+(2, 'Margherita', 'Bianchi', 'marghe.bianchi@libero.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'admin_casa', 'default_user.png', 2, 0);
 
 --
 -- Indici per le tabelle scaricate
@@ -202,7 +216,7 @@ ALTER TABLE `candidature`
 -- AUTO_INCREMENT per la tabella `case`
 --
 ALTER TABLE `case`
-  MODIFY `id_casa` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_casa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `lista_spesa`
@@ -226,7 +240,7 @@ ALTER TABLE `turni_pulizie`
 -- AUTO_INCREMENT per la tabella `utenti`
 --
 ALTER TABLE `utenti`
-  MODIFY `id_utente` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_utente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Limiti per le tabelle scaricate
