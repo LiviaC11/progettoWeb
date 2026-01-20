@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 20, 2026 alle 17:53
+-- Creato il: Gen 20, 2026 alle 18:20
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -37,6 +37,13 @@ CREATE TABLE `annunci` (
   `data_pubblicazione` timestamp NOT NULL DEFAULT current_timestamp(),
   `isActive` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `annunci`
+--
+
+INSERT INTO `annunci` (`id_annuncio`, `titolo`, `descrizione`, `prezzo`, `luogo`, `id_utente`, `data_pubblicazione`, `isActive`) VALUES
+(1, 'Cercasi 2 coinquilini', 'Casa a 10 min dalla stazione e dall\'università, posizione strategica. Sono disponibili due singole. La casa ha un piccolo cortile dove poter riporre le bici o altri mezzi di trasporto, c\'è una sala-cucina in comune molto grande ed un bagno da condividere al piano superiore, sempre al piano superiore si trovano 2 delle tre camere da letto totali. ', 250.00, 'Cesena', 2, '2026-01-20 17:14:47', 1);
 
 -- --------------------------------------------------------
 
@@ -149,15 +156,16 @@ CREATE TABLE `utenti` (
   `ruolo` enum('studente','admin_casa','super_admin') DEFAULT 'studente',
   `foto_profilo` varchar(255) DEFAULT 'default_user.png',
   `id_casa` int(11) DEFAULT NULL,
-  `punti` int(11) DEFAULT 0
+  `punti` int(11) DEFAULT 0,
+  `dataIscrizione` date NOT NULL DEFAULT curdate()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dump dei dati per la tabella `utenti`
 --
 
-INSERT INTO `utenti` (`id_utente`, `nome`, `cognome`, `email`, `password`, `ruolo`, `foto_profilo`, `id_casa`, `punti`) VALUES
-(2, 'Margherita', 'Bianchi', 'marghe.bianchi@libero.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'admin_casa', 'default_user.png', 2, 0);
+INSERT INTO `utenti` (`id_utente`, `nome`, `cognome`, `email`, `password`, `ruolo`, `foto_profilo`, `id_casa`, `punti`, `dataIscrizione`) VALUES
+(2, 'Margherita', 'Bianchi', 'marghe.bianchi@libero.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'admin_casa', 'default_user.png', 2, 0, '2026-01-20');
 
 --
 -- Indici per le tabelle scaricate
@@ -231,7 +239,7 @@ ALTER TABLE `utenti`
 -- AUTO_INCREMENT per la tabella `annunci`
 --
 ALTER TABLE `annunci`
-  MODIFY `id_annuncio` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_annuncio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT per la tabella `candidature`
