@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 20, 2026 alle 12:10
+-- Creato il: Gen 20, 2026 alle 17:53
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -34,7 +34,8 @@ CREATE TABLE `annunci` (
   `prezzo` decimal(10,2) DEFAULT NULL,
   `luogo` varchar(255) DEFAULT NULL,
   `id_utente` int(11) DEFAULT NULL,
-  `data_pubblicazione` timestamp NOT NULL DEFAULT current_timestamp()
+  `data_pubblicazione` timestamp NOT NULL DEFAULT current_timestamp(),
+  `isActive` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -83,6 +84,23 @@ CREATE TABLE `lista_spesa` (
   `id_unita` int(11) NOT NULL,
   `nome_prodotto` varchar(100) NOT NULL,
   `preso` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `segnalazioni`
+--
+
+CREATE TABLE `segnalazioni` (
+  `id_segnalazione` int(11) NOT NULL,
+  `id_autore` int(11) NOT NULL,
+  `id_annuncio_segnalato` int(11) DEFAULT NULL,
+  `id_utente_segnalato` int(11) DEFAULT NULL,
+  `motivo` varchar(255) NOT NULL,
+  `descrizione` text DEFAULT NULL,
+  `stato` enum('aperta','in_lavorazione','risolta','archiviata') DEFAULT 'aperta',
+  `data_segnalazione` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -173,6 +191,15 @@ ALTER TABLE `lista_spesa`
   ADD PRIMARY KEY (`id_prodotto`);
 
 --
+-- Indici per le tabelle `segnalazioni`
+--
+ALTER TABLE `segnalazioni`
+  ADD PRIMARY KEY (`id_segnalazione`),
+  ADD KEY `fk_segnalazione_autore` (`id_autore`),
+  ADD KEY `fk_segnalazione_annuncio` (`id_annuncio_segnalato`),
+  ADD KEY `fk_segnalazione_utente` (`id_utente_segnalato`);
+
+--
 -- Indici per le tabelle `spese`
 --
 ALTER TABLE `spese`
@@ -216,13 +243,19 @@ ALTER TABLE `candidature`
 -- AUTO_INCREMENT per la tabella `case`
 --
 ALTER TABLE `case`
-  MODIFY `id_casa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_casa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `lista_spesa`
 --
 ALTER TABLE `lista_spesa`
   MODIFY `id_prodotto` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `segnalazioni`
+--
+ALTER TABLE `segnalazioni`
+  MODIFY `id_segnalazione` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `spese`
@@ -240,7 +273,7 @@ ALTER TABLE `turni_pulizie`
 -- AUTO_INCREMENT per la tabella `utenti`
 --
 ALTER TABLE `utenti`
-  MODIFY `id_utente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_utente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Limiti per le tabelle scaricate
@@ -257,6 +290,14 @@ ALTER TABLE `annunci`
 --
 ALTER TABLE `candidature`
   ADD CONSTRAINT `fk_annuncio` FOREIGN KEY (`id_annuncio`) REFERENCES `annunci` (`id_annuncio`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Limiti per la tabella `segnalazioni`
+--
+ALTER TABLE `segnalazioni`
+  ADD CONSTRAINT `fk_segnalazione_annuncio` FOREIGN KEY (`id_annuncio_segnalato`) REFERENCES `annunci` (`id_annuncio`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_segnalazione_autore` FOREIGN KEY (`id_autore`) REFERENCES `utenti` (`id_utente`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_segnalazione_utente` FOREIGN KEY (`id_utente_segnalato`) REFERENCES `utenti` (`id_utente`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `spese`

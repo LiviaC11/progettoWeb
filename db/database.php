@@ -237,7 +237,18 @@ public function setTurnoCompletato($id_turno) {
 }
 
 
+//SEGNALAZIONI
 
+// Inserisce una nuova segnalazione nel database
+public function insertSegnalazione($id_autore, $id_annuncio_segnalato, $id_utente_segnalato, $motivo, $descrizione) {
+    $query = "INSERT INTO segnalazioni (id_autore, id_annuncio_segnalato, id_utente_segnalato, motivo, descrizione) 
+              VALUES (?, ?, ?, ?, ?)";
+    $stmt = $this->db->prepare($query);
+    // 'iiiss' indica: int, int, int, string, string
+    $stmt->bind_param('iiiss', $id_autore, $id_annuncio_segnalato, $id_utente_segnalato, $motivo, $descrizione);
+    
+    return $stmt->execute();
+}
 
 
 
