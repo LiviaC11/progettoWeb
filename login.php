@@ -18,6 +18,7 @@ if(isset($_POST["email"]) && isset($_POST["password"])){
         $_SESSION["id_casa"] = $login_result["id_casa"];
         
         header("location: dashboard.php");
+        exit();
     } else {
         $templateParams["errore_login"] = "Email o password errati!";
     }

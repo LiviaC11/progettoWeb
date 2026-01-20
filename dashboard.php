@@ -8,7 +8,12 @@ if(!isset($_SESSION["id_utente"])){
 }
 
 $id_utente = $_SESSION["id_utente"];
-$id_casa = $_SESSION["id_casa"];
+$id_casa = $_SESSION["id_casa"] ?? null;
+if (!$id_casa) {
+    // Se non c'è la casa, rimandalo al login
+    header("location: login.php");
+    exit();
+}
 
 // Recupero dati per la Dashboard
 $templateParams["utente"] = $dbh->getUserById($id_utente);
