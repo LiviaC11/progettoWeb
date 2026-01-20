@@ -92,5 +92,33 @@ public function registerWithNewHouse($nome, $cognome, $email, $password, $nome_c
     
     return $stmtU->execute() ? $this->db->insert_id : false;
 }
+
+//Recupera tutti i dati di un utente partendo dal suo ID.
+public function getUserById($id_utente) {
+    $query = "SELECT * FROM utenti WHERE id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_utente);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    return $result->fetch_assoc();
+    }
+
+//aggiorna pw utente
+public function updateUserPassword($id_utente, $password_hash) {
+        $query = "UPDATE utenti SET password = ? WHERE id_utente = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('si', $password_hash, $id_utente);
+        
+        return $stmt->execute();
+    }
+//aggiorna foto profilo utente
+public function updateUserPhoto($id_utente, $foto) {
+        $query = "UPDATE utenti SET foto = ? WHERE id_utente = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('si', $foto, $id_utente);
+        
+        return $stmt->execute();
+    }
 }
 ?>
