@@ -17,7 +17,7 @@
                 data-bs-toggle serve per dire a js di far partire l'effetto collapse
                 data-bs-target invece dice quale classe prendere 
             -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Apri menu di navigazione">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav"> <!--classe per il menù a tendina-->

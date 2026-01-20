@@ -10,12 +10,12 @@
                 <h5 class="fw-bold mb-3">🔍 Filtra la ricerca</h5>
                 <form class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold">Dove</label>
-                        <input type="text" class="form-control" placeholder="Cerca città o zona...">
+                        <label  for="filtro-dove" class="form-label small fw-bold">Dove</label>
+                        <input type="text" id="filtro-dove" class="form-control" placeholder="Cerca città o zona...">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold">Prezzo</label>
-                        <select class="form-select">
+                        <label for="filtro-prezzo" class="form-label small fw-bold">Prezzo</label>
+                        <select id="filtro-prezzo" class="form-select">
                             <option selected>Budget max...</option>
                             <option value="1">Sotto 300€</option>
                             <option value="2">300€ - 500€</option>
@@ -70,7 +70,7 @@
                     <div class="modal-content border-0 shadow-lg">
                         <div class="modal-header border-0 pb-0">
                             <h4 class="fw-bold modal-title">Invia la tua candidatura</h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi finestra di candidatura"></button>
                         </div>
                         <div class="modal-body p-4">
                             <p class="text-muted small mb-4">Stai rispondendo all'annuncio: <strong><?php echo $annuncio['titolo']; ?></strong></p>
@@ -79,23 +79,23 @@
                                 <input type="hidden" name="id_annuncio" value="<?php echo $annuncio['id_annuncio']; ?>">
                                 
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Nome Completo</label>
-                                    <input type="text" name="nome" class="form-control" placeholder="Es. Mario Rossi" required>
+                                    <label for="nome-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Nome Completo</label>
+                                    <input type="text" id="nome-<?php echo $annuncio['id_annuncio']; ?>" name="nome" class="form-control" placeholder="Es. Mario Rossi" required>
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Email</label>
-                                    <input type="email" name="email" class="form-control" placeholder="mario.rossi@esempio.it" required>
+                                    <label for="email-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Email</label>
+                                    <input type="email" id="email-<?php echo $annuncio['id_annuncio']; ?>" name="email" class="form-control" placeholder="mario.rossi@esempio.it" required>
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Parlaci di te</label>
-                                    <textarea name="messaggio" class="form-control" rows="4" placeholder="Quali sono le tue abitudini? Perché dovrebbero scegliere te?" required></textarea>
+                                    <label for="messaggio-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Parlaci di te</label>
+                                    <textarea id="messaggio-<?php echo $annuncio['id_annuncio']; ?>" name="messaggio" class="form-control" rows="4" placeholder="Quali sono le tue abitudini? Perché dovrebbero scegliere te?" required></textarea>
                                 </div>
                                 
                                 <div class="mb-4">
-                                    <label class="form-label fw-bold">Una tua foto (Opzionale)</label>
-                                    <input type="file" name="foto" class="form-control">
+                                    <label for="foto-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Una tua foto (Opzionale)</label>
+                                    <input type="file" id="foto-<?php echo $annuncio['id_annuncio']; ?>" name="foto" class="form-control">
                                 </div>
                                 
                                 <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm">Invia Candidatura</button>
