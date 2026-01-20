@@ -29,6 +29,9 @@ if(isset($_POST["email"]) && isset($_POST["password"])){
         $_SESSION["id_utente"] = $id_utente;
         $_SESSION["nome"] = $nome;
         $_SESSION["ruolo"] = ($scelta_casa == "crea") ? "admin_casa" : "studente";
+
+        $utente_appena_creato = $dbh->getUserById($id_utente);
+        $_SESSION["id_casa"] = $utente_appena_creato["id_casa"];
         
         header("location: dashboard.php?msg=Benvenuto su CoHappy!");
         exit();
