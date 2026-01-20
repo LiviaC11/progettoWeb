@@ -114,11 +114,43 @@ public function updateUserPassword($id_utente, $password_hash) {
     }
 //aggiorna foto profilo utente
 public function updateUserPhoto($id_utente, $foto) {
-        $query = "UPDATE utenti SET foto = ? WHERE id_utente = ?";
+        $query = "UPDATE utenti SET foto_profilo = ? WHERE id_utente = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param('si', $foto, $id_utente);
         
         return $stmt->execute();
     }
+
+// Recupera la classifica della casa (Punti)
+public function getHouseRanking($id_casa) {
+    $query = "SELECT nome, foto, punti FROM utenti WHERE id_casa = ? ORDER BY punti DESC";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_casa);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+// Recupera le ultime spese della casa
+public function getRecentExpenses($id_casa, $limit) {
+    $query = "SELECT s.*, u.nome as nome_autore FROM spese s 
+              JOIN utenti u ON s.id_utente = u.id_utente 
+              WHERE s.id_casa = ? ORDER BY s.data_spesa DESC LIMIT ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ii', $id_casa, $limit);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+// Recupera il prossimo turno di pulizia
+public function getNextCleaningTurn($id_casa) {
+    $query = "SELECT t.*, u.nome FROM turni t 
+              JOIN utenti u ON t.id_utente = u.id_utente 
+              WHERE t.id_casa = ? AND t.completato = 0 
+              ORDER BY t.data_scadenza ASC LIMIT 1";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_casa);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
 }
 ?>

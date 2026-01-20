@@ -15,7 +15,7 @@
 
                 <div class="text-center mb-5">
                     <div class="mb-3">
-                        <img src="<?php echo UPLOAD_DIR . ($templateParams['utente']['foto'] ?? 'default_avatar.png'); ?>" 
+                        <img src="<?php echo UPLOAD_DIR . ($templateParams['utente']['foto_profilo'] ?? 'default_avatar.png'); ?>" 
                              alt="Foto Profilo" 
                              class="rounded-circle shadow-sm border" 
                              style="width: 120px; height: 120px; object-fit: cover;">
