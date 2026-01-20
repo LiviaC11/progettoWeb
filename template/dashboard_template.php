@@ -28,7 +28,6 @@
                         <h5 class="fw-bold mb-4">📢 I miei annunci</h5>
                         <?php if(count($templateParams["miei_annunci"]) > 0): ?>
                             <?php 
-                            // Prendiamo solo i primi 2 o 3 per il box laterale
                             $anteprima = array_slice($templateParams["miei_annunci"], 0, 3);
                             foreach($anteprima as $annuncio): 
                             ?>
@@ -44,7 +43,7 @@
                         <?php else: ?>
                             <div class="text-center py-3">
                                 <p class="small text-muted">Non hai ancora pubblicato nulla.</p>
-                                <a href="annunci.php" class="btn btn-dark btn-sm w-100">Pubblica ora</a>
+                                <button type="button" class="btn btn-dark btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">Pubblica ora</button>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -94,7 +93,10 @@
                 <div class="card shadow-sm border-0 p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="fw-bold mb-0">I miei annunci personali</h4>
-                        <a href="annunci.php" class="btn btn-success fw-bold">+ Nuovo Annuncio</a>
+                        
+                        <button type="button" class="btn btn-success fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">
+                            + Nuovo Annuncio
+                        </button>
                     </div>
                     
                     <?php if(count($templateParams["miei_annunci"]) > 0): ?>
@@ -115,7 +117,9 @@
                                             <td><?php echo $annuncio["luogo"]; ?></td>
                                             <td><span class="badge bg-light text-dark"><?php echo $annuncio["prezzo"]; ?>€</span></td>
                                             <td>
-                                                <button class="btn btn-sm btn-outline-danger">Elimina</button>
+                                                <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" 
+                                                   class="btn btn-sm btn-outline-danger" 
+                                                   onclick="return confirm('Sei sicuro di voler eliminare questo annuncio?')">Elimina</a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -129,4 +133,41 @@
             </div>
         </div>
     <?php endif; ?>
+</div>
+
+<div class="modal fade" id="modalNuovoAnnuncio" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="modalLabel">📢 Pubblica nuovo annuncio</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="processa_annuncio.php" method="POST">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Titolo dell'annuncio</label>
+                        <input type="text" name="titolo" class="form-control" placeholder="Esempio: Stanza singola in centro" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Descrizione dettagliata</label>
+                        <textarea name="descrizione" class="form-control" rows="4" placeholder="Descrivi la casa, i coinquilini..." required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Prezzo mensile (€)</label>
+                            <input type="number" name="prezzo" step="0.01" class="form-control" placeholder="0.00" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Città / Zona</label>
+                            <input type="text" name="luogo" class="form-control" placeholder="Esempio: Cesena" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold">Pubblica ora</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
