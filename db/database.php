@@ -184,13 +184,13 @@ public function deleteSpesa($id_spesa) {
 
 //mostra gli annunci creati dall'utente
 public function getAnnunciByUtente($id_utente) {
-    $query = "SELECT * FROM annunci WHERE id_utente = ? ORDER BY data_pubblicazione DESC";
+    $query = "SELECT a.*, u.nome FROM annunci a 
+              JOIN utenti u ON a.id_utente = u.id_utente 
+              WHERE a.isActive = 1 
+              ORDER BY data_pubblicazione DESC";
     $stmt = $this->db->prepare($query);
-    $stmt->bind_param('i', $id_utente);
     $stmt->execute();
-    $result = $stmt->get_result();
-
-    return $result->fetch_all(MYSQLI_ASSOC);
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 //recupera gli annunci di ogni utente pubblicati
