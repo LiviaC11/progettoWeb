@@ -250,7 +250,43 @@ public function insertSegnalazione($id_autore, $id_annuncio_segnalato, $id_utent
     return $stmt->execute();
 }
 
+//RECUPERO PW
+//salva token con scadenza a 30 minuti
+public function setRecoveryToken($email, $token) {
+    // Calcoliamo la data attuale + 30 minuti
+    $scadenza = date("Y-m-d H:i:s", strtotime('+30 minutes'));
+    
+    $query = "UPDATE utenti SET password_token = ?, token_scadenza = ? WHERE email = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('sss', $token, $scadenza, $email);
+    
+    return $stmt->execute();
+}
 
+//cerca utente in base ai token attivi
+public function getUserByToken($token) {
+    // NOW()  restituisce l'orario attuale del server
+    $query = "SELECT * FROM utenti WHERE password_token = ? AND token_scadenza > NOW()";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('s', $token);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    return $result->fetch_assoc(); // Ritorna l'array dell'utente o null se non trovato/scaduto
+}
+
+//aggiorna pw con quella nuova
+public function updatePwAndRemoveToken($id_utente, $new_password) {
+    // Criptiamo sempre la password prima di salvarla
+    $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+    
+    // Settiamo token e scadenza a NULL così il link non sarà più riutilizzabile
+    $query = "UPDATE utenti SET password = ?, password_token = NULL, token_scadenza = NULL WHERE id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('si', $password_hash, $id_utente);
+    
+    return $stmt->execute();
+}
 
 }
 ?>

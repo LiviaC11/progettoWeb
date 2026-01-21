@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 20, 2026 alle 18:20
+-- Creato il: Gen 21, 2026 alle 10:56
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -157,15 +157,17 @@ CREATE TABLE `utenti` (
   `foto_profilo` varchar(255) DEFAULT 'default_user.png',
   `id_casa` int(11) DEFAULT NULL,
   `punti` int(11) DEFAULT 0,
-  `dataIscrizione` date NOT NULL DEFAULT curdate()
+  `dataIscrizione` date NOT NULL DEFAULT curdate(),
+  `password_token` varchar(255) DEFAULT NULL,
+  `token_scadenza` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dump dei dati per la tabella `utenti`
 --
 
-INSERT INTO `utenti` (`id_utente`, `nome`, `cognome`, `email`, `password`, `ruolo`, `foto_profilo`, `id_casa`, `punti`, `dataIscrizione`) VALUES
-(2, 'Margherita', 'Bianchi', 'marghe.bianchi@libero.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'admin_casa', 'default_user.png', 2, 0, '2026-01-20');
+INSERT INTO `utenti` (`id_utente`, `nome`, `cognome`, `email`, `password`, `ruolo`, `foto_profilo`, `id_casa`, `punti`, `dataIscrizione`, `password_token`, `token_scadenza`) VALUES
+(2, 'Margherita', 'Bianchi', 'marghe.bianchi@libero.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'admin_casa', 'default_user.png', 2, 0, '2026-01-20', NULL, NULL);
 
 --
 -- Indici per le tabelle scaricate

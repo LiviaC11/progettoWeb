@@ -31,7 +31,8 @@
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <input type="password" class="form-control" id="password" name="password" required minlength="8">
+                        <small class="text-muted">Minimo 8 caratteri.</small>
                     </div>
 
                     <hr class="my-4">

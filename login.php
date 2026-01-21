@@ -1,6 +1,11 @@
 <?php
 require_once 'bootstrap.php';
 
+//verifica che l'aggiornamento pw sia andato bene
+if(isset($_GET["msg"]) && $_GET["msg"] == "password_aggiornata"){
+    $templateParams["messaggio_successo"] = "Password aggiornata con successo! Ora puoi accedere.";
+}
+
 // Se l'utente è già loggato, lo mandiamo direttamente alla dashboard
 if(isset($_SESSION["id_utente"])){
     header("location: dashboard.php");
