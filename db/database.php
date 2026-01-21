@@ -67,7 +67,10 @@ public function registerWithNewHouse($nome, $cognome, $email, $password, $nome_c
 
 //Recupera tutti i dati di un utente partendo dal suo ID.
 public function getUserById($id_utente) {
-    $query = "SELECT * FROM utenti WHERE id_utente = ?";
+    $query = "SELECT u.*, c.codice_invito 
+              FROM utenti u 
+              LEFT JOIN `case` c ON u.id_casa = c.id_casa 
+              WHERE u.id_utente = ?";
     $stmt = $this->db->prepare($query);
     $stmt->bind_param('i', $id_utente);
     $stmt->execute();

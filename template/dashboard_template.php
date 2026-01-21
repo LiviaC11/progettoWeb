@@ -31,7 +31,8 @@
         <div class="row mb-4 align-items-center">
             <div class="col-md-8">
                 <h2 class="fw-bold text-dark">Bentornato, <?php echo $templateParams["utente"]["nome"]; ?>! 👋</h2>
-                <p class="text-muted mb-0">Ecco cosa succede nella tua casa oggi.</p>
+                <p class="text-muted mb-0">Ecco cosa succede nella tua <a href="#" class="fw-bold text-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCodiceInvito">
+                tua casa 🏠</a> oggi.</p>
             </div>
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
                 <a href="dashboard.php?azione=abbandona" 
@@ -86,7 +87,7 @@
                                 </li>
                             <?php endforeach; ?>
                         </ul>
-                        <a href="casa.php" class="btn btn-dark btn-sm w-100 mt-auto">Vedi tutte</a>
+                        <a href="spese.php" class="btn btn-dark btn-sm w-100 mt-auto">Vedi tutte</a>
                     </div>
                 </div>
             </div>
@@ -191,3 +192,29 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="modalCodiceInvito" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg text-center">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="display-6 mb-3">🏠</div>
+                <h5 class="fw-bold mb-2">Codice della Casa</h5>
+                <p class="text-muted small">I tuoi coinquilini possono unirsi usando questo codice:</p>
+                
+                <div class="bg-light p-3 rounded-3 border border-primary border-dashed">
+                    <span class="h4 fw-bold text-primary tracking-widest">
+                        <?php echo $templateParams["utente"]["codice_invito"] ?? "Codice non disponibile"; ?>
+                    </span>
+                </div>
+                
+                <button class="btn btn-link btn-sm mt-3 text-decoration-none btn-copy-code"
+                data-code="<?php echo $templateParams["utente"]["codice_invito"] ?? ''; ?>" onclick="copyToClipboard()">
+                    📄 Copia codice
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
