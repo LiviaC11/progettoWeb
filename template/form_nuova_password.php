@@ -27,3 +27,4 @@
         </div>
     </div>
 </div>
+<script src="js/validazione.js"></script>
