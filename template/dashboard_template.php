@@ -30,7 +30,7 @@
     <?php else: ?>
         <div class="row mb-4 align-items-center">
             <div class="col-md-8">
-                <h2 class="fw-bold text-dark">Bentornato, <?php echo $templateParams["utente"]["nome"]; ?>! 👋</h2>
+                <h2 class="fw-bold text-dark">Bentornata/o, <?php echo $templateParams["utente"]["nome"]; ?>! 👋</h2>
                 <p class="text-muted mb-0">
                     Ecco cosa succede nella 
                     <a href="#" class="fw-bold text-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCodiceInvito">
@@ -50,8 +50,8 @@
         <div class="row g-4">
             <div class="col-lg-4">
                 <div class="card shadow-sm border-0 h-100">
-                    <div class="card-body">
-                        <h5 class="fw-bold mb-4">📢 I miei annunci</h5>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="fw-bold mb-4 text-primary">📢 I miei annunci</h5>
                         <?php if(count($templateParams["miei_annunci"]) > 0): ?>
                             <?php 
                             $anteprima = array_slice($templateParams["miei_annunci"], 0, 3);
@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
                             <?php endforeach; ?>
-                            <a href="annunci.php" class="btn btn-outline-dark btn-sm w-100 mt-2">Vedi tutti</a>
+                            <a href="spese.php" class="btn btn-outline-dark btn-sm w-100 mt-auto">Vedi tutte</a>
                         <?php else: ?>
                             <div class="text-center py-3">
                                 <p class="small text-muted">Non ci sono annunci attivi per questa casa.</p>
@@ -93,7 +93,7 @@
                                 </li>
                             <?php endforeach; ?>
                         </ul>
-                        <a href="spese.php" class="btn btn-dark btn-sm w-100 mt-auto">Vedi tutte</a>
+                        <a href="spese.php" class="btn btn-outline-dark btn-sm w-100 mt-auto">Vedi tutte</a>
                     </div>
                 </div>
             </div>
