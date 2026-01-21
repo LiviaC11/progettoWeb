@@ -31,14 +31,18 @@
         <div class="row mb-4 align-items-center">
             <div class="col-md-8">
                 <h2 class="fw-bold text-dark">Bentornato, <?php echo $templateParams["utente"]["nome"]; ?>! 👋</h2>
-                <p class="text-muted mb-0">Ecco cosa succede nella tua <a href="#" class="fw-bold text-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCodiceInvito">
-                tua casa 🏠</a> oggi.</p>
+                <p class="text-muted mb-0">
+                    Ecco cosa succede nella 
+                    <a href="#" class="fw-bold text-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCodiceInvito">
+                        tua casa 🏠
+                    </a> oggi.
+                </p>
             </div>
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
                 <a href="dashboard.php?azione=abbandona" 
                    class="btn btn-outline-danger fw-bold shadow-sm" 
                    onclick="return confirm('Sei sicuro di voler lasciare questa casa? Non vedrai più spese e turni.')">
-                   🚪 Abbandona Casa
+                    🚪 Abbandona Casa
                 </a>
             </div>
         </div>
@@ -57,15 +61,17 @@
                                     <h6 class="fw-bold mb-0 small"><?php echo $annuncio['titolo']; ?></h6>
                                     <div class="d-flex justify-content-between small">
                                         <span class="text-muted"><?php echo $annuncio['luogo']; ?></span>
-                                        <span class="fw-bold text-success"><?php echo $annuncio['prezzo']; ?>€</span>
+                                        <span class="fw-bold text-success"><?php echo number_format($annuncio['prezzo'], 2); ?>€</span>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
-                            <a href="annunci.php" class="btn btn-outline-dark btn-sm w-100 mt-2">Gestisci annunci</a>
+                            <a href="annunci.php" class="btn btn-outline-dark btn-sm w-100 mt-2">Vedi tutti</a>
                         <?php else: ?>
                             <div class="text-center py-3">
-                                <p class="small text-muted">Non hai ancora pubblicato nulla.</p>
-                                <button type="button" class="btn btn-dark btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">Pubblica ora</button>
+                                <p class="small text-muted">Non ci sono annunci attivi per questa casa.</p>
+                                <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
+                                    <button type="button" class="btn btn-dark btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">Pubblica ora</button>
+                                <?php endif; ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -74,7 +80,7 @@
 
             <div class="col-lg-4">
                 <div class="card shadow-sm border-0 h-100">
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="fw-bold mb-4">💸 Spese Recenti</h5>
                         <ul class="list-group list-group-flush mb-3">
                             <?php foreach($templateParams["spese_recenti"] as $spesa): ?>
@@ -94,7 +100,7 @@
 
             <div class="col-lg-4">
                 <div class="card shadow-sm border-0 h-100 bg-light">
-                    <div class="card-body text-center">
+                    <div class="card-body text-center d-flex flex-column">
                         <h5 class="fw-bold mb-4 text-start">🧹 Turno Pulizie</h5>
                         <div class="py-4">
                             <div class="display-6 mb-2">🧴</div>
@@ -102,9 +108,9 @@
                             <h4 class="text-primary fw-bold">
                                 <?php echo $templateParams["prossimo_turno"]["nome"] ?? "Nessuno assegnato"; ?>
                             </h4>
-                            <p class="small text-muted italic">Zona: <?php echo $templateParams["prossimo_turno"]["compito"] ?? "Generale"; ?></p>
+                            <p class="small text-muted">Zona: <?php echo $templateParams["prossimo_turno"]["compito"] ?? "Generale"; ?></p>
                         </div>
-                        <a href="casa.php#turni" class="btn btn-outline-dark btn-sm w-100">Gestisci turni</a>
+                        <a href="casa.php#turni" class="btn btn-outline-dark btn-sm w-100 mt-auto">Gestisci turni</a>
                     </div>
                 </div>
             </div>
@@ -114,10 +120,14 @@
             <div class="col-12">
                 <div class="card shadow-sm border-0 p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="fw-bold mb-0">I miei annunci personali</h4>
-                        <button type="button" class="btn btn-success fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">
-                            + Nuovo Annuncio
-                        </button>
+                        <h4 class="fw-bold mb-0">Gestione Annunci Casa</h4>
+                        
+                        <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
+                            <button type="button" class="btn btn-success fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">
+                                + Nuovo Annuncio
+                            </button>
+                          
+                        <?php endif; ?>
                     </div>
                     
                     <?php if(count($templateParams["miei_annunci"]) > 0): ?>
@@ -128,7 +138,9 @@
                                         <th>Titolo</th>
                                         <th>Città</th>
                                         <th>Prezzo</th>
-                                        <th>Azioni</th>
+                                        <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
+                                            <th>Azioni</th>
+                                        <?php endif; ?>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -136,19 +148,21 @@
                                         <tr>
                                             <td class="fw-bold"><?php echo $annuncio["titolo"]; ?></td>
                                             <td><?php echo $annuncio["luogo"]; ?></td>
-                                            <td><span class="badge bg-light text-dark"><?php echo $annuncio["prezzo"]; ?>€</span></td>
-                                            <td>
-                                                <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" 
-                                                   class="btn btn-sm btn-outline-danger" 
-                                                   onclick="return confirm('Sei sicuro di voler eliminare questo annuncio?')">Elimina</a>
-                                            </td>
+                                            <td><span class="badge bg-light text-dark"><?php echo number_format($annuncio["prezzo"], 2); ?>€</span></td>
+                                            <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
+                                                <td>
+                                                    <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" 
+                                                       class="btn btn-sm btn-outline-danger" 
+                                                       onclick="return confirm('Sei sicuro di voler eliminare questo annuncio?')">Elimina</a>
+                                                </td>
+                                            <?php endif; ?>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
                     <?php else: ?>
-                        <p class="text-muted">Non hai ancora creato annunci.</p>
+                        <p class="text-muted">Non ci sono annunci creati per questa abitazione.</p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -156,11 +170,11 @@
     <?php endif; ?>
 </div>
 
-<div class="modal fade" id="modalNuovoAnnuncio" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+<div class="modal fade" id="modalNuovoAnnuncio" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title fw-bold" id="modalLabel">📢 Pubblica nuovo annuncio</h5>
+                <h5 class="modal-title fw-bold">📢 Pubblica nuovo annuncio</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="processa_annuncio.php" method="POST">
@@ -192,6 +206,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modalCodiceInvito" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content border-0 shadow-lg text-center">
@@ -202,19 +217,13 @@
                 <div class="display-6 mb-3">🏠</div>
                 <h5 class="fw-bold mb-2">Codice della Casa</h5>
                 <p class="text-muted small">I tuoi coinquilini possono unirsi usando questo codice:</p>
-                
                 <div class="bg-light p-3 rounded-3 border border-primary border-dashed">
                     <span class="h4 fw-bold text-primary tracking-widest">
-                        <?php echo $templateParams["utente"]["codice_invito"] ?? "Codice non disponibile"; ?>
+                        <?php echo $templateParams["utente"]["codice_invito"] ?? "CH-NON-DISP"; ?>
                     </span>
                 </div>
-                
-                <button class="btn btn-link btn-sm mt-3 text-decoration-none btn-copy-code"
-                data-code="<?php echo $templateParams["utente"]["codice_invito"] ?? ''; ?>" onclick="copyToClipboard()">
-                    📄 Copia codice
-                </button>
+                <p class="mt-3 small text-muted">Copia e invia questo codice ai tuoi futuri coinquilini.</p>
             </div>
         </div>
     </div>
 </div>
-
