@@ -14,7 +14,7 @@
                     <p class="mb-1"><strong>Campus Universitario</strong></p>
                     <p class="text-muted">Via dell'Università 123, Bologna</p>
                     
-                    <h4 class="mt-4 mb-3">📞 Contatti Diretti</h4>
+                    <h4 class="mt-4 mb-3">📞 Contatti </h4>
                     <p class="mb-1">📧 <a href="mailto:support@cohappy.it" class="text-decoration-none">support@cohappy.it</a></p>
                     <p class="mb-0">📱 +39 051 1234567 (Lun-Ven, 9-18)</p>
                 </div>

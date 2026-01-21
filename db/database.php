@@ -10,7 +10,191 @@ class DatabaseHelper {
         }
     }
 
-    // inseririmento nuova candidatura
+    //AUTENTIFICAZIONE
+
+    //verifica pw ed email ed avvia sessione
+    public function checkLogin($email, $password) {
+        $query = "SELECT id_utente, nome, email, password, ruolo, id_casa FROM utenti WHERE email = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+
+        // Verifichiamo l'hash della password
+        if ($user && password_verify($password, $user['password'])) {
+            return $user; // Ritorna i dati dell'utente (senza la password)
+        }
+        return false;
+    }
+
+    //registra un utente grazie al codice di invito in una casa già creata
+    public function registerToExistingHouse($nome, $cognome, $email, $password, $codice) {
+    
+    $queryCasa = "SELECT id_casa FROM `case` WHERE codice_invito = ?";
+    $stmt = $this->db->prepare($queryCasa);
+    $stmt->bind_param('s', $codice);
+    $stmt->execute();
+    $id_casa = $stmt->get_result()->fetch_assoc()['id_casa'] ?? null;
+
+    if(!$id_casa) return false;
+    
+    $queryUser = "INSERT INTO utenti (nome, cognome, email, password, ruolo, id_casa) VALUES (?, ?, ?, ?, 'studente', ?)";
+    $stmtU = $this->db->prepare($queryUser);
+    $stmtU->bind_param('ssssi', $nome, $cognome, $email, $password, $id_casa);
+    
+    return $stmtU->execute() ? $this->db->insert_id : false;
+}
+
+//crea una nuova casa e registra l'utente come admin
+public function registerWithNewHouse($nome, $cognome, $email, $password, $nome_casa) {
+    $codice = strtoupper(substr(md5(time()), 0, 8));
+    $queryC = "INSERT INTO `case` (nome_casa, codice_invito) VALUES (?, ?)";
+    $stmtC = $this->db->prepare($queryC);
+    $stmtC->bind_param('ss', $nome_casa, $codice);
+    $stmtC->execute();
+    $id_casa = $this->db->insert_id;
+
+    // L'utente che carica la casa è l'admin
+    $queryU = "INSERT INTO utenti (nome, cognome, email, password, ruolo, id_casa) VALUES (?, ?, ?, ?, 'admin_casa', ?)";
+    $stmtU = $this->db->prepare($queryU);
+    $stmtU->bind_param('ssssi', $nome, $cognome, $email, $password, $id_casa);
+    
+    return $stmtU->execute() ? $this->db->insert_id : false;
+}
+
+//FUNZIONALITA' UTENTE
+
+//Recupera tutti i dati di un utente partendo dal suo ID.
+public function getUserById($id_utente) {
+    $query = "SELECT u.*, c.codice_invito 
+              FROM utenti u 
+              LEFT JOIN `case` c ON u.id_casa = c.id_casa 
+              WHERE u.id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_utente);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    return $result->fetch_assoc();
+    }
+
+//aggiorna pw utente
+public function updateUserPassword($id_utente, $password_hash) {
+        $query = "UPDATE utenti SET password = ? WHERE id_utente = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('si', $password_hash, $id_utente);
+        
+        return $stmt->execute();
+    }
+//aggiorna foto profilo utente
+public function updateUserPhoto($id_utente, $foto) {
+        $query = "UPDATE utenti SET foto_profilo = ? WHERE id_utente = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('si', $foto, $id_utente);
+        
+        return $stmt->execute();
+    }
+
+//lascia unità abitativa
+public function leaveHouse($id_utente) {
+    $query = "UPDATE utenti SET id_casa = NULL WHERE id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_utente);
+    return $stmt->execute();
+}
+
+//DASHBOARD
+
+// Recupera la classifica della casa (Punti)
+public function getHouseRanking($id_casa) {
+    $query = "SELECT nome, foto_profilo, punti FROM utenti WHERE id_casa = ? ORDER BY punti DESC";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_casa);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+// Recupera le ultime spese della casa
+public function getRecentExpenses($id_casa, $limit) {
+    $query = "SELECT s.*, u.nome as nome_autore FROM spese s 
+              JOIN utenti u ON s.chi_ha_pagato = u.id_utente 
+              WHERE s.id_casa = ? ORDER BY s.data_spesa DESC LIMIT ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ii', $id_casa, $limit);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+// Recupera il prossimo turno di pulizia
+public function getNextCleaningTurn($id_casa) {
+    $query = "SELECT t.*, u.nome FROM turni_pulizie t 
+              JOIN utenti u ON t.assegnato_a = u.id_utente 
+              WHERE t.id_casa = ? AND t.completato = 0 
+              ORDER BY t.data_scadenza ASC LIMIT 1";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_casa);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+//permette ad un utente già registrato ma senza casa di usare un codice invito
+public function joinHouseWithCode($id_utente, $codice) {
+    // verifichiamo se esista una casa con un determinato codice invito
+    $queryCasa = "SELECT id_casa FROM casa WHERE codice_invito = ?";
+    $stmtCasa = $this->db->prepare($queryCasa);
+    $stmtCasa->bind_param('s', $codice);
+    $stmtCasa->execute();
+    $result = $stmtCasa->get_result();
+    $casa = $result->fetch_assoc();
+
+    if ($casa) {
+        $id_casa = $casa['id_casa'];
+        // Aggiorniamo l'utente con l'id_casa trovato
+        $queryUpdate = "UPDATE utenti SET id_casa = ? WHERE id_utente = ?";
+        $stmtUpdate = $this->db->prepare($queryUpdate);
+        $stmtUpdate->bind_param('ii', $id_casa, $id_utente);
+        
+        if($stmtUpdate->execute()){
+            return $id_casa; // Ritorna l'ID casa per aggiornare la sessione
+        }
+    }
+    return false; // Codice errato o errore aggiornamento
+}
+
+//SPESE
+
+public function insertSpesa($descrizione, $importo, $data, $chi_ha_pagato, $id_casa) {
+    $query = "INSERT INTO spese (descrizione, importo, data_spesa, chi_ha_pagato, id_casa) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('sdsii', $descrizione, $importo, $data, $chi_ha_pagato, $id_casa);
+    
+    return $stmt->execute();
+}
+
+//x recuperare storico delle spese
+public function getSpeseByCasa($id_casa) {
+    $query = "SELECT s.*, u.nome FROM spese s 
+              JOIN utenti u ON s.chi_ha_pagato = u.id_utente 
+              WHERE s.id_casa = ? ORDER BY s.data_spesa DESC";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_casa);
+    $stmt->execute();
+    
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+//eliminare spesa
+public function deleteSpesa($id_spesa) {
+    $query = "DELETE FROM spese WHERE id_spesa = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_spesa);
+    return $stmt->execute();
+}
+
+//ANNUNCI
+
+    // risposta ad un annuncio
     public function insertCandidatura($id_annuncio, $nome, $email, $messaggio, $foto) {
         $query = "INSERT INTO candidature (id_annuncio, nome, email, messaggio, foto) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($query);
@@ -21,7 +205,10 @@ class DatabaseHelper {
     
     public function getRandomAnnunci($n) {
     // Seleziona n annunci in ordine casuale
-    $query = "SELECT * FROM annunci ORDER BY RAND() LIMIT ?";
+    $query = "SELECT a.*, u.nome as nome_proprietario 
+                  FROM annunci a 
+                  LEFT JOIN utenti u ON a.id_utente = u.id_utente 
+                  ORDER BY RAND() LIMIT ?";
     $stmt = $this->db->prepare($query);
     $stmt->bind_param('i', $n);
     $stmt->execute();
@@ -29,5 +216,130 @@ class DatabaseHelper {
 
     return $result->fetch_all(MYSQLI_ASSOC);
 }
+
+//mostra gli annunci creati dall'utente
+public function getAnnunciByUtente($id_utente) {
+    $query = "SELECT a.*, u.nome FROM annunci a 
+              JOIN utenti u ON a.id_utente = u.id_utente 
+              WHERE a.isActive = 1 
+              ORDER BY data_pubblicazione DESC";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+//recupera gli annunci di ogni utente pubblicati
+public function getAllAnnunci() {
+    $query = "SELECT a.*, u.nome FROM annunci a JOIN utenti u ON a.id_utente = u.id_utente ORDER BY data_pubblicazione DESC";
+    return $this->db->query($query)->fetch_all(MYSQLI_ASSOC);
+}
+
+//creare un annuncio per utenti registrati
+public function insertAnnuncio($titolo, $descrizione, $prezzo, $luogo, $id_utente) {
+    $query = "INSERT INTO annunci (titolo, descrizione, prezzo, luogo, id_utente) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ssdsi', $titolo, $descrizione, $prezzo, $luogo, $id_utente);
+    return $stmt->execute();
+}
+//eliminare un annuncio
+public function deleteAnnuncio($id_annuncio, $id_utente) {
+    $query = "DELETE FROM annunci WHERE id_annuncio = ? AND id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ii', $id_annuncio, $id_utente);
+    return $stmt->execute();
+}
+
+//modificare annuncio x Admin
+public function updateAnnuncio($id_annuncio, $titolo, $descrizione, $prezzo, $luogo, $id_utente) {
+    $query = "UPDATE annunci SET titolo = ?, descrizione = ?, prezzo = ?, luogo = ? 
+              WHERE id_annuncio = ? AND id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ssdiii', $titolo, $descrizione, $prezzo, $luogo, $id_annuncio, $id_utente);
+    
+    return $stmt->execute();
+}
+
+public function getAnnuncioById($id_annuncio) {
+    $query = "SELECT * FROM annunci WHERE id_annuncio = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_annuncio);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+}
+//PULIZIE
+
+public function getPulizieByCasa($id_casa){
+    $query= "SELECT t.*, u.nome as assegnato_a_nome
+             FROM turni_pulizie t
+             JOIN utenti u ON t.assegnato_a = u.id_utente
+             WHERE t.id_casa = ?
+             ORDER BY t.data_scadenza ASC";
+    $stmt= $this->db->prepare($query);
+    $stmt->bind_param('i', $id_casa);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+// Segna un turno pulizie come completato 
+public function setTurnoCompletato($id_turno) {
+    $query = "UPDATE turni_pulizie SET completato = 1 WHERE id_turno = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_turno);
+    return $stmt->execute();
+}
+
+
+//SEGNALAZIONI
+
+// Inserisce una nuova segnalazione nel database
+public function insertSegnalazione($id_autore, $id_annuncio_segnalato, $id_utente_segnalato, $motivo, $descrizione) {
+    $query = "INSERT INTO segnalazioni (id_autore, id_annuncio_segnalato, id_utente_segnalato, motivo, descrizione) 
+              VALUES (?, ?, ?, ?, ?)";
+    $stmt = $this->db->prepare($query);
+    // 'iiiss' indica: int, int, int, string, string
+    $stmt->bind_param('iiiss', $id_autore, $id_annuncio_segnalato, $id_utente_segnalato, $motivo, $descrizione);
+    
+    return $stmt->execute();
+}
+
+//RECUPERO PW
+//salva token con scadenza a 30 minuti
+public function setRecoveryToken($email, $token) {
+    // Calcoliamo la data attuale + 30 minuti
+    $scadenza = date("Y-m-d H:i:s", strtotime('+30 minutes'));
+    
+    $query = "UPDATE utenti SET password_token = ?, token_scadenza = ? WHERE email = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('sss', $token, $scadenza, $email);
+    
+    return $stmt->execute();
+}
+
+//cerca utente in base ai token attivi
+public function getUserByToken($token) {
+    // NOW()  restituisce l'orario attuale del server
+    $query = "SELECT * FROM utenti WHERE password_token = ? AND token_scadenza > NOW()";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('s', $token);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    return $result->fetch_assoc(); // Ritorna l'array dell'utente o null se non trovato/scaduto
+}
+
+//aggiorna pw con quella nuova
+public function updatePwAndRemoveToken($id_utente, $new_password) {
+    // Criptiamo sempre la password prima di salvarla
+    $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+    
+    // Settiamo token e scadenza a NULL così il link non sarà più riutilizzabile
+    $query = "UPDATE utenti SET password = ?, password_token = NULL, token_scadenza = NULL WHERE id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('si', $password_hash, $id_utente);
+    
+    return $stmt->execute();
+}
+
 }
 ?>

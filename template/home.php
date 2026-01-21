@@ -4,7 +4,7 @@
                 <h1 class="display-4 fw-bold ">Benvenuto su CoHappy</h1>
                 <p class="mb-4">La piattaforma ideale per gestire la tua vita da studente fuori sede. <br>Organizza spese, pulizie e trova i coinquilini perfetti.</p>
                 <a href="login.php" class="btn btn-dark btn-lg px-4">Inizia ora</a>
-                <a href="annunci.php" class="btn btn-outline-secondary btn-lg px-4">Cerca stanza</a>
+                <a href="annunci.php" class="btn btn-outline-dark btn-lg px-4">Cerca stanza</a>
             </div>
         </header>
 
