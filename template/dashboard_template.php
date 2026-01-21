@@ -1,23 +1,44 @@
 <div class="container my-5">
     <?php if(!isset($_SESSION["id_casa"]) || is_null($_SESSION["id_casa"])): ?>
-        <div class="row">
-            <div class="col-12 text-center py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center py-5">
                 <div class="card shadow-sm border-0 p-5">
                     <div class="display-1 mb-3">🏠</div>
-                    <h2 class="fw-bold">Non sei all’interno di nessuna abitazione</h2>
-                    <p class="text-muted">Per gestire spese e turni devi prima unirti a una casa o crearne una.</p>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
-                        <a href="annunci.php" class="btn btn-primary btn-lg fw-bold">Vai ad ANNUNCI</a>
-                        <a href="profilo.php" class="btn btn-outline-dark btn-lg fw-bold">Cerca Codice Invito</a>
+                    <h2 class="fw-bold">Benvenuto su CoHappy!</h2>
+                    <p class="text-muted">Per gestire spese e turni, inserisci il codice invito della tua casa o cercane una negli annunci.</p>
+                    
+                    <?php if(isset($templateParams["errore_casa"])): ?>
+                        <div class="alert alert-danger mt-3"><?php echo $templateParams["errore_casa"]; ?></div>
+                    <?php endif; ?>
+
+                    <form action="dashboard.php" method="POST" class="mt-4">
+                        <input type="hidden" name="azione" value="unisciti_casa">
+                        <div class="input-group mb-3 mx-auto" style="max-width: 450px;">
+                            <input type="text" name="codice_invito" class="form-control form-control-lg" placeholder="Codice Invito (es. CH-1234)" required>
+                            <button class="btn btn-primary btn-lg fw-bold" type="submit">Unisciti</button>
+                        </div>
+                    </form>
+
+                    <div class="mt-4">
+                        <p class="small text-muted">Oppure</p>
+                        <a href="annunci.php" class="btn btn-outline-dark fw-bold">Sfoglia Annunci</a>
                     </div>
                 </div>
             </div>
         </div>
+
     <?php else: ?>
-        <div class="row mb-4">
-            <div class="col-12">
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-8">
                 <h2 class="fw-bold text-dark">Bentornato, <?php echo $templateParams["utente"]["nome"]; ?>! 👋</h2>
-                <p class="text-muted">Ecco cosa succede nella tua casa oggi.</p>
+                <p class="text-muted mb-0">Ecco cosa succede nella tua casa oggi.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="dashboard.php?azione=abbandona" 
+                   class="btn btn-outline-danger fw-bold shadow-sm" 
+                   onclick="return confirm('Sei sicuro di voler lasciare questa casa? Non vedrai più spese e turni.')">
+                   🚪 Abbandona Casa
+                </a>
             </div>
         </div>
 
@@ -93,7 +114,6 @@
                 <div class="card shadow-sm border-0 p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="fw-bold mb-0">I miei annunci personali</h4>
-                        
                         <button type="button" class="btn btn-success fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">
                             + Nuovo Annuncio
                         </button>
@@ -127,7 +147,7 @@
                             </table>
                         </div>
                     <?php else: ?>
-                        <p class="text-muted">Non hai ancora creato annunci. I tuoi futuri annunci appariranno qui.</p>
+                        <p class="text-muted">Non hai ancora creato annunci.</p>
                     <?php endif; ?>
                 </div>
             </div>

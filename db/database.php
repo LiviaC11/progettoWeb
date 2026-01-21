@@ -93,6 +93,14 @@ public function updateUserPhoto($id_utente, $foto) {
         return $stmt->execute();
     }
 
+//lascia unità abitativa
+public function leaveHouse($id_utente) {
+    $query = "UPDATE utenti SET id_casa = NULL WHERE id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_utente);
+    return $stmt->execute();
+}
+
 //DASHBOARD
 
 // Recupera la classifica della casa (Punti)
@@ -125,6 +133,30 @@ public function getNextCleaningTurn($id_casa) {
     $stmt->bind_param('i', $id_casa);
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();
+}
+
+//permette ad un utente già registrato ma senza casa di usare un codice invito
+public function joinHouseWithCode($id_utente, $codice) {
+    // verifichiamo se esista una casa con un determinato codice invito
+    $queryCasa = "SELECT id_casa FROM casa WHERE codice_invito = ?";
+    $stmtCasa = $this->db->prepare($queryCasa);
+    $stmtCasa->bind_param('s', $codice);
+    $stmtCasa->execute();
+    $result = $stmtCasa->get_result();
+    $casa = $result->fetch_assoc();
+
+    if ($casa) {
+        $id_casa = $casa['id_casa'];
+        // Aggiorniamo l'utente con l'id_casa trovato
+        $queryUpdate = "UPDATE utenti SET id_casa = ? WHERE id_utente = ?";
+        $stmtUpdate = $this->db->prepare($queryUpdate);
+        $stmtUpdate->bind_param('ii', $id_casa, $id_utente);
+        
+        if($stmtUpdate->execute()){
+            return $id_casa; // Ritorna l'ID casa per aggiornare la sessione
+        }
+    }
+    return false; // Codice errato o errore aggiornamento
 }
 
 //SPESE
