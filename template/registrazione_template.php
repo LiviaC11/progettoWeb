@@ -92,3 +92,4 @@ function toggleCasa() {
     }
 }
 </script>
+<script src="js/validazione.js"></script>

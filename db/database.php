@@ -249,6 +249,24 @@ public function deleteAnnuncio($id_annuncio, $id_utente) {
     return $stmt->execute();
 }
 
+//modificare annuncio x Admin
+public function updateAnnuncio($id_annuncio, $titolo, $descrizione, $prezzo, $luogo, $id_utente) {
+    $query = "UPDATE annunci SET titolo = ?, descrizione = ?, prezzo = ?, luogo = ? 
+              WHERE id_annuncio = ? AND id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ssdiii', $titolo, $descrizione, $prezzo, $luogo, $id_annuncio, $id_utente);
+    
+    return $stmt->execute();
+}
+
+public function getAnnuncioById($id_annuncio) {
+    $query = "SELECT * FROM annunci WHERE id_annuncio = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_annuncio);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+}
 //PULIZIE
 
 public function getPulizieByCasa($id_casa){

@@ -151,10 +151,16 @@
                                             <td><span class="badge bg-light text-dark"><?php echo number_format($annuncio["prezzo"], 2); ?>€</span></td>
                                             <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
                                                 <td>
-                                                    <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" 
-                                                       class="btn btn-sm btn-outline-danger" 
-                                                       onclick="return confirm('Sei sicuro di voler eliminare questo annuncio?')">Elimina</a>
-                                                </td>
+        <div class="d-flex flex-column flex-sm-row gap-2">
+            <a href="modifica_annuncio.php?id=<?php echo $annuncio['id_annuncio']; ?>" 
+                class="btn btn-sm btn-outline-primary">
+                 Modifica</a>
+            
+            <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" 
+               class="btn btn-sm btn-outline-danger" 
+               onclick="return confirm('Sei sicuro di voler eliminare questo annuncio?')">Elimina</a>
+        </div>
+    </td>
                                             <?php endif; ?>
                                         </tr>
                                     <?php endforeach; ?>
