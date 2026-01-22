@@ -207,31 +207,31 @@
                     <input type="hidden" name="azione" value="inserisci">
                     <div class="modal-body p-4">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Titolo dell'annuncio</label>
-                            <input type="text" name="titolo" class="form-control" placeholder="Esempio: Stanza singola in centro" required>
+                            <label for="titolo" class="form-label fw-bold">Titolo dell'annuncio</label>
+                            <input type="text" id="titolo" name="titolo" class="form-control" placeholder="Esempio: Stanza singola in centro" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Descrizione dettagliata</label>
-                            <textarea name="descrizione" class="form-control" rows="4" placeholder="Descrivi la casa..." required></textarea>
+                            <label for="descrizione_appartamento" class="form-label fw-bold">Descrizione dettagliata</label>
+                            <textarea name="descrizione" id="descrizione_appartamento" class="form-control" rows="4" placeholder="Descrivi la casa..." required></textarea>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Prezzo mensile (€)</label>
-                                <input type="number" name="prezzo" step="0.01" class="form-control" placeholder="0.00" required>
+                                <label for="mensilità" class="form-label fw-bold">Prezzo mensile (€)</label>
+                                <input type="number" id="mensilità" name="prezzo" step="0.01" class="form-control" placeholder="0.00" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Città / Zona</label>
-                                <input type="text" name="luogo" class="form-control" placeholder="Esempio: Cesena" required>
+                                <label for="luogo" class="form-label fw-bold">Città / Zona</label>
+                                <input type="text" id="luogo" name="luogo" class="form-control" placeholder="Esempio: Cesena" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Foto dell'alloggio</label>
-                            <input type="file" name="immagine" class="form-control" accept="image/*">
+                            <label for="foto_alloggio" class="form-label fw-bold">Foto dell'alloggio</label>
+                            <input type="file" id="foto_alloggio" name="immagine" class="form-control" accept="image/*">
                             <div class="form-text">Se non carichi nulla, verrà usata la foto predefinita.</div>
                         </div>
                     </div>
                     <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Annulla">Annulla</button>
                         <button type="submit" class="btn btn-primary px-4 fw-bold">Pubblica ora</button>
                     </div>
                 </form>
@@ -277,8 +277,8 @@
                             </div>
                         </div>
                         <div class="modal-footer bg-light">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                            <button type="submit" class="btn btn-warning fw-bold px-4">Salva Modifiche</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Annulla</button>
+                            <button type="submit" class="btn btn-warning fw-bold px-4" aria-label="Salva modifiche">Salva Modifiche</button>
                         </div>
                     </form>
                 </div>
