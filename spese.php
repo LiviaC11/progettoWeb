@@ -1,7 +1,7 @@
 <?php
 require_once 'bootstrap.php';
 
-// Protezione
+// Protezione: controllo che un utente sia loggato
 if(!isset($_SESSION["id_utente"])) {
     header("location: login.php");
     exit();
@@ -27,7 +27,18 @@ if(isset($_POST["descrizione"]) && isset($_POST["importo"])){
     exit();
 }
 
+if($id_casa){
+$numero_coinquilini = $dbh->getNumeroMembriCasa($id_casa);
 $templateParams["spese"] = $dbh->getSpeseByCasa($id_casa);
+$templateParams["num_persone"] = $numero_coinquilini;
+$templateParams["coinquilini"] = $dbh->getUtentiByCasa($id_casa);
+}else{
+    $templateParams["num_persone"] = 0;
+    $templateParams["spese"] = [];
+    $templateParams["coinquilini"] = [];
+}
+
+
 $templateParams["titolo"] = "CoHappy - Spese";
 $templateParams["nome"] = "template/spese_template.php";
 

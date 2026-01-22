@@ -192,6 +192,27 @@ public function deleteSpesa($id_spesa) {
     return $stmt->execute();
 }
 
+//utile per calcolare quote delle spese
+public function getNumeroMembriCasa($id_casa) {
+    $query = "SELECT COUNT(*) as totale FROM utenti WHERE id_casa = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_casa);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    return $row['totale'];
+}
+
+//elenco utenti per le quote delle spese
+public function getUtentiByCasa($id_casa) {
+    $query = "SELECT id_utente, nome FROM utenti WHERE id_casa = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_casa);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 //ANNUNCI
 
     // risposta ad un annuncio
@@ -235,10 +256,10 @@ public function getAllAnnunci() {
 }
 
 //creare un annuncio per utenti registrati
-public function insertAnnuncio($titolo, $descrizione, $prezzo, $luogo, $id_utente) {
-    $query = "INSERT INTO annunci (titolo, descrizione, prezzo, luogo, id_utente) VALUES (?, ?, ?, ?, ?)";
+public function insertAnnuncio($titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine) {
+    $query = "INSERT INTO annunci (titolo, descrizione, prezzo, luogo, id_utente, immagine) VALUES (?, ?, ?, ?, ?)";
     $stmt = $this->db->prepare($query);
-    $stmt->bind_param('ssdsi', $titolo, $descrizione, $prezzo, $luogo, $id_utente);
+    $stmt->bind_param('ssdsi', $titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine);
     return $stmt->execute();
 }
 //eliminare un annuncio

@@ -28,7 +28,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         }
     } else {
         // CASO INSERIMENTO: Creiamo un nuovo record (comportamento standard)
-        $successo = $dbh->insertAnnuncio($titolo, $descrizione, $prezzo, $luogo, $id_utente);
+        $successo = $dbh->insertAnnuncio($titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine);
         
         if($successo){
             header("location: dashboard.php?msg=annuncio_creato");
