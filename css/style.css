@@ -5,3 +5,30 @@
         /* Opzionale: rende lo scroll verticale più fluido */
         scroll-behavior: smooth; 
     }
+
+
+/* --- GESTIONE ALTEZZA TABELLA SMART --- */
+
+/* MOBILE (Default) */
+.layout-smart {
+    height: auto;          /* La pagina si allunga normalmente */
+    overflow: visible;     /* Scroll normale della pagina */
+}
+
+.tabella-smart {
+    height: 400px;         /* Altezza fissa su mobile: cambiala se vuoi 300px o 500px */
+}
+
+/* DESKTOP (Schermi grandi, dai 768px in su) */
+@media (min-width: 768px) {
+    .layout-smart {
+        /* Calcola 100% altezza meno il menu (70px) */
+        height: calc(100vh - 70px); 
+        overflow: hidden;  /* Blocca lo scroll della pagina intera */
+    }
+
+    .tabella-smart {
+        /* La tabella si adatta allo spazio disponibile */
+        height: 100% !important; 
+    }
+}

@@ -48,7 +48,7 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card h-100 shadow-sm border-0">
                     <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="<?php echo $annuncio['titolo']; ?>" style="border-top-left-radius: 0.375rem; border-top-right-radius: 0.375rem;">
-                    
+
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h5 class="fw-bold mb-0"><?php echo $annuncio['titolo']; ?></h5>
@@ -57,7 +57,7 @@
                         <p class="card-text text-muted small mb-4">
                             <?php echo (strlen($annuncio['descrizione']) > 100) ? substr($annuncio['descrizione'], 0, 100).'...' : $annuncio['descrizione']; ?>
                         </p>
-                        
+
                         <button class="btn btn-outline-dark w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#modal-<?php echo $annuncio['id_annuncio']; ?>">
                             Visualizza e Candida
                         </button>
@@ -74,30 +74,30 @@
                         </div>
                         <div class="modal-body p-4">
                             <p class="text-muted small mb-4">Stai rispondendo all'annuncio: <strong><?php echo $annuncio['titolo']; ?></strong></p>
-                            
+
                             <form method="POST" action="risposta.php" enctype="multipart/form-data">
                                 <input type="hidden" name="id_annuncio" value="<?php echo $annuncio['id_annuncio']; ?>">
-                                
+
                                 <div class="mb-3">
                                     <label for="nome-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Nome Completo</label>
                                     <input type="text" id="nome-<?php echo $annuncio['id_annuncio']; ?>" name="nome" class="form-control" placeholder="Es. Mario Rossi" required>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label for="email-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Email</label>
                                     <input type="email" id="email-<?php echo $annuncio['id_annuncio']; ?>" name="email" class="form-control" placeholder="mario.rossi@esempio.it" required>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label for="messaggio-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Parlaci di te</label>
                                     <textarea id="messaggio-<?php echo $annuncio['id_annuncio']; ?>" name="messaggio" class="form-control" rows="4" placeholder="Quali sono le tue abitudini? Perché dovrebbero scegliere te?" required></textarea>
                                 </div>
-                                
+
                                 <div class="mb-4">
                                     <label for="foto-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Una tua foto (Opzionale)</label>
                                     <input type="file" id="foto-<?php echo $annuncio['id_annuncio']; ?>" name="foto" class="form-control">
                                 </div>
-                                
+
                                 <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm">Invia Candidatura</button>
                             </form>
                         </div>
