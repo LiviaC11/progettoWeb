@@ -186,26 +186,26 @@
             <form action="processa_annuncio.php" method="POST" enctype="multipart/form-data">
                 <div class="modal-body p-4">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Titolo dell'annuncio</label>
-                        <input type="text" name="titolo" class="form-control" placeholder="Esempio: Stanza singola in centro" required>
+                        <label for="titolo_annuncio" class="form-label fw-bold">Titolo dell'annuncio</label>
+                        <input type="text" id="titolo_annuncio" name="titolo" class="form-control" placeholder="Esempio: Stanza singola in centro" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Descrizione dettagliata</label>
-                        <textarea name="descrizione" class="form-control" rows="4" placeholder="Descrivi la casa, i coinquilini..." required></textarea>
+                        <label for="descrizione_ap" class="form-label fw-bold">Descrizione dettagliata</label>
+                        <textarea id="descrizione_ap" name="descrizione" class="form-control" rows="4" placeholder="Descrivi la casa, i coinquilini..." required></textarea>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Prezzo mensile (€)</label>
-                            <input type="number" name="prezzo" step="0.01" class="form-control" placeholder="0.00" required>
+                            <label for="affitto" class="form-label fw-bold">Prezzo mensile (€)</label>
+                            <input type="number" id="affitto" name="prezzo" step="0.01" class="form-control" placeholder="0.00" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Città / Zona</label>
-                            <input type="text" name="luogo" class="form-control" placeholder="Esempio: Cesena" required>
+                            <label for="luogo" class="form-label fw-bold">Città / Zona</label>
+                            <input type="text" id="luogo" name="luogo" class="form-control" placeholder="Esempio: Cesena" required>
                         </div>
                     </div>
                     <div class="mb-3">
-            <label class="form-label fw-bold">Foto dell'alloggio</label>
-            <input type="file" name="immagine" class="form-control" accept="image/*">
+            <label for="foto_alloggio" class="form-label fw-bold">Foto dell'alloggio</label>
+            <input type="file" id="foto_alloggio" name="immagine" class="form-control" accept="image/*">
             <div class="form-text">Carica una foto chiara della stanza o della casa.</div>
         </div>
     </div>
