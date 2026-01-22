@@ -6,26 +6,50 @@
         </button>
     </div>
 
-    <?php foreach($templateParams["spese"] as $spesa): ?>
-        <div class="card border-0 shadow-sm mb-3">
-            <div class="card-body d-flex justify-content-between align-items-center">
+   <?php foreach($templateParams["spese"] as $spesa): ?>
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
                 <div>
-                    <h6 class="fw-bold mb-1"><?php echo $spesa["descrizione"]; ?></h6>
-                    <small class="text-muted">
-                        <?php echo date("d/m", strtotime($spesa["data_spesa"])); ?> • 
-                        Pagato da: <strong><?php echo $spesa["nome"]; ?></strong>
-                    </small>
+                    <h5 class="fw-bold mb-1 text-dark"><?php echo $spesa["descrizione"]; ?></h5>
+                    <p class="text-muted small mb-0">
+                        Pagato da: <strong><?php echo $spesa["nome"]; ?></strong> 
+                        il <?php echo date("d/m/Y", strtotime($spesa["data_spesa"])); ?>
+                    </p>
                 </div>
                 <div class="text-end">
-                    <div class="fw-bold text-success mb-2">€ <?php echo number_format($spesa["importo"], 2); ?></div>
+                    <span class="h5 fw-bold text-success d-block mb-1">
+                        € <?php echo number_format($spesa["importo"], 2); ?>
+                    </span>
                     <a href="spese.php?azione=elimina&id=<?php echo $spesa['id_spesa']; ?>" 
-                       class="text-danger p-2" onclick="return confirm('Eliminare?')">
-                       🗑️
+                       class="text-decoration-none small text-danger" 
+                       onclick="return confirm('Eliminare questa spesa?')">
+                       Elimina 🗑️
                     </a>
                 </div>
             </div>
+
+            <div class="border-top pt-3 mt-2">
+                <p class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.7rem;">Divisione quote:</p>
+                <div class="row g-2">
+                    <?php 
+                    // Calcolo la quota singola (importo / numero persone totali della casa)
+                    $quota_singola = $spesa["importo"] / $templateParams["num_persone"]; 
+                    
+                    foreach($templateParams["coinquilini"] as $coinquilino): 
+                    ?>
+                        <div class="col-6 col-md-4">
+                            <div class="p-2 bg-light rounded-2 border-start border-primary border-3">
+                                <div class="small fw-bold text-truncate"><?php echo $coinquilino["nome"]; ?></div>
+                                <div class="small text-primary">€ <?php echo number_format($quota_singola, 2); ?></div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
-    <?php endforeach; ?>
+    </div>
+<?php endforeach; ?>
 </div>
 
 <div class="modal fade" id="addSpesa" tabindex="-1">

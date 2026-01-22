@@ -59,7 +59,7 @@
                         </p>
 
                         <button class="btn btn-outline-dark w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#modal-<?php echo $annuncio['id_annuncio']; ?>">
-                            Visualizza e Candida
+                            Visualizza e Candidati
                         </button>
                     </div>
                 </div>
