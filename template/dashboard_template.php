@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
                             <?php endforeach; ?>
-                            <a href="spese.php" class="btn btn-outline-dark btn-sm w-100 mt-auto">Vedi tutte</a>
+                            <a href="annunci.php" class="btn btn-outline-dark btn-sm w-100 mt-auto">Vedi tutte</a>
                         <?php else: ?>
                             <div class="text-center py-3">
                                 <p class="small text-muted">Non ci sono annunci attivi per questa casa.</p>
@@ -183,7 +183,7 @@
                 <h5 class="modal-title fw-bold">📢 Pubblica nuovo annuncio</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="processa_annuncio.php" method="POST">
+            <form action="processa_annuncio.php" method="POST" enctype="multipart/form-data">
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Titolo dell'annuncio</label>
@@ -203,7 +203,12 @@
                             <input type="text" name="luogo" class="form-control" placeholder="Esempio: Cesena" required>
                         </div>
                     </div>
-                </div>
+                    <div class="mb-3">
+            <label class="form-label fw-bold">Foto dell'alloggio</label>
+            <input type="file" name="immagine" class="form-control" accept="image/*">
+            <div class="form-text">Carica una foto chiara della stanza o della casa.</div>
+        </div>
+    </div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
                     <button type="submit" class="btn btn-primary px-4 fw-bold">Pubblica ora</button>
