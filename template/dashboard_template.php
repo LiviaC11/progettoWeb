@@ -49,7 +49,7 @@
 
         <div class="row g-4">
             <div class="col-lg-4">
-                <div class="card shadow-sm border-0 h-100">
+                <div class="card shadow-sm border-0 h-100 bg-light">
                     <div class="card-body d-flex flex-column">
                         <h5 class="fw-bold mb-4 text-primary">📢 I miei annunci</h5>
                         <?php if(count($templateParams["miei_annunci"]) > 0): ?>
@@ -79,7 +79,7 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="card shadow-sm border-0 h-100">
+                <div class="card shadow-sm border-0 h-100 bg-light">
                     <div class="card-body d-flex flex-column">
                         <h5 class="fw-bold mb-4">💸 Spese Recenti</h5>
                         <ul class="list-group list-group-flush mb-3">
@@ -98,22 +98,60 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-md-4">
                 <div class="card shadow-sm border-0 h-100 bg-light">
-                    <div class="card-body text-center d-flex flex-column">
-                        <h5 class="fw-bold mb-4 text-start">🧹 Turno Pulizie</h5>
-                        <div class="py-4">
-                            <div class="display-6 mb-2">🧴</div>
-                            <h6 class="fw-bold mb-1">Questa settimana tocca a:</h6>
-                            <h4 class="text-primary fw-bold">
-                                <?php echo $templateParams["prossimo_turno"]["nome"] ?? "Nessuno assegnato"; ?>
-                            </h4>
-                            <p class="small text-muted">Zona: <?php echo $templateParams["prossimo_turno"]["compito"] ?? "Generale"; ?></p>
+                    <div class="card-header bg-transparent border-0 pt-3 px-3">
+                        <h5 class="fw-bold m-0 text-dark"><i class="bi bi-bucket-fill"></i> Turni Pulizie</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        
+                        <?php if(empty($templateParams["turni_pulizie"])): ?>
+                            <div class="text-center py-4 flex-grow-1 d-flex flex-column justify-content-center">
+                                <div class="display-6 mb-2">✨</div>
+                                <p class="text-muted small mb-0">Tutto pulito! Nessun turno in programma.</p>
+                            </div>
+                        <?php else: ?>
+                            <div class="list-group list-group-flush bg-transparent flex-grow-1" style="max-height: 200px; overflow-y: auto;">
+                                <?php 
+                                    // Mostriamo solo i primi 3 turni o quelli del mese corrente
+                                    $limit = 3;
+                                    $count = 0;
+                                    foreach($templateParams["turni_pulizie"] as $turno): 
+                                        if($count >= $limit) break;
+                                        $data = new DateTime($turno['data_scadenza']);
+                                        $oggi = new DateTime();
+                                        $isToday = $data->format('Y-m-d') == $oggi->format('Y-m-d');
+                                        $isPast = $data < $oggi && $turno['stato'] == 0;
+                                        $statusClass = $isPast ? 'text-danger fw-bold' : ($isToday ? 'text-warning fw-bold' : 'text-muted');
+                                ?>
+                                    <div class="list-group-item bg-transparent border-bottom px-0 py-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <div class="small <?php echo $statusClass; ?>">
+                                                    <?php echo $data->format('d M'); ?> 
+                                                    <?php if($isPast) echo '<i class="bi bi-exclamation-circle-fill"></i>'; ?>
+                                                </div>
+                                                <div class="fw-bold text-dark" style="line-height: 1.2;"><?php echo $turno['compito']; ?></div>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-white text-dark border shadow-sm">
+                                                    <?php echo substr($turno['nome'], 0, 10); ?>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php $count++; endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- Bottone Gestisci in fondo -->
+                        <div class="mt-3">
+                            <a href="pulizie.php" class="btn btn-outline-dark btn-sm w-100 mt-auto">
+                                <i class="bi bi-calendar-week" ></i> Gestisci Turni
+                            </a>
                         </div>
-                        <a href="casa.php#turni" class="btn btn-outline-dark btn-sm w-100 mt-auto">Gestisci turni</a>
                     </div>
                 </div>
-            </div>
         </div>
 
         <div class="row mt-5">

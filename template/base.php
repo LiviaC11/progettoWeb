@@ -26,8 +26,13 @@
                     <li class="nav-item"><a class="nav-link <?php isActive("annunci.php") ?>" href="annunci.php">Annunci</a></li>
                     <li class="nav-item"><a class="nav-link <?php isActive("contatti.php") ?>" href="contatti.php">Contatti</a></li>
                 </ul>
-                <div class="d-flex">
-                    <a href="login.php" class="btn btn-light text-primary fw-bold text-black">Login</a>
+                <div class="d-flex align-items-center">
+                    <?php if(isset($_SESSION["id_utente"])): ?>
+                        <span class="text-white me-3 small ">Ciao, <strong><?php echo $_SESSION["nome"]; ?></strong></span>
+                        <a href="logout.php" class="btn btn-outline-light btn-sm fw-bold">Logout</a>
+                    <?php else: ?>
+                        <a href="login.php" class="btn btn-light text-primary fw-bold text-black">Login</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

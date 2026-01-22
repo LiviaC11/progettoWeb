@@ -148,7 +148,7 @@ public function getNextCleaningTurn($id_casa) {
 //permette ad un utente già registrato ma senza casa di usare un codice invito
 public function joinHouseWithCode($id_utente, $codice) {
     // verifichiamo se esista una casa con un determinato codice invito
-    $queryCasa = "SELECT id_casa FROM casa WHERE codice_invito = ?";
+    $queryCasa = "SELECT id_casa FROM `case` WHERE codice_invito = ?";
     $stmtCasa = $this->db->prepare($queryCasa);
     $stmtCasa->bind_param('s', $codice);
     $stmtCasa->execute();
@@ -398,5 +398,55 @@ public function getAllAnnunci() {
     return $this->db->query($query)->fetch_all(MYSQLI_ASSOC);
 }
 
+    public function getCoinquilini($id_casa){
+        $query = "SELECT id_utente, nome, cognome FROM utenti WHERE id_casa = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id_casa);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function insertTurnoPulizia($compito, $data, $assegnato_a, $id_casa){
+        // FIX: Rimosso 'stato' dalla query perché non esiste nella tabella
+        $query = "INSERT INTO turni_pulizie (compito, data_scadenza, assegnato_a, id_casa) VALUES (?, ?, ?, ?)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('ssii', $compito, $data, $assegnato_a, $id_casa);
+        return $stmt->execute();
+    }
+
+    public function getTurniPulizie($id_casa){
+        // Selezioniamo anche lo stato se esiste, altrimenti assumiamo 0
+        // Se la colonna 'stato' non esiste nel DB, toglila dalla query!
+        $query = "SELECT t.*, u.nome, u.cognome 
+                  FROM turni_pulizie t 
+                  JOIN utenti u ON t.assegnato_a = u.id_utente 
+                  WHERE t.id_casa = ? 
+                  ORDER BY t.data_scadenza ASC";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id_casa);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+        public function getTurniMeseSuccessivo($id_casa){
+        $query = "SELECT t.*, u.nome, u.cognome 
+                  FROM turni_pulizie t 
+                  JOIN utenti u ON t.assegnato_a = u.id_utente 
+                  WHERE t.id_casa = ? 
+                  AND t.data_scadenza BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+                  ORDER BY t.data_scadenza ASC";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id_casa);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function updateTurnoStato($id_turno, $completato){
+        $query = "UPDATE turni_pulizie SET completato = ? WHERE id_turno = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('ii', $completato, $id_turno);
+        return $stmt->execute();
+    }
 }
 ?>
