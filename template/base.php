@@ -5,7 +5,7 @@
          <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-	@@ -17,7 +17,7 @@
+
                 data-bs-toggle serve per dire a js di far partire l'effetto collapse
                 data-bs-target invece dice quale classe prendere 
             -->
@@ -13,7 +13,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav"> <!--classe per il menù a tendina-->
-	@@ -27,21 +27,15 @@
+
                     <li class="nav-item"><a class="nav-link <?php isActive("contatti.php") ?>" href="contatti.php">Contatti</a></li>
                 </ul>
                 <div class="d-flex">
@@ -43,4 +43,5 @@
     <script src="js/validazione.js"></script>
 </body>
     </body>    
+
 </html>
