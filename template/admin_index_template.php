@@ -56,10 +56,21 @@
                                     <td class="align-middle"><?php echo $Utente["email"]?></td>
                                     <td class="align-middle"><?php echo $Utente["ruolo"]?></td>
                                     <td class="text-end px-3 align-middle">
-                                        <button type="button" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-pencil"></i> Edit
+                                    <!-- Non mostrare il tasto Ban per i Super Admin (non puoi bannarti da sola!) -->
+                                    <?php if($Utente['ruolo'] != 'super_admin'): ?>
+                                    <form action="processa-segnalazione.php" method="POST" class="d-inline">
+                                        <!-- Usiamo l'azione specifica per il ban diretto -->
+                                        <input type="hidden" name="azione" value="ban_utente_diretto">
+                                        <input type="hidden" name="id_utente" value="<?php echo $Utente['id_utente']; ?>">
+                                        
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('⚠️ ATTENZIONE ⚠️\n\nStai per eliminare definitivamente <?php echo $utente['nome']; ?>.\n\nVerranno cancellati anche:\n- I suoi annunci\n- Le sue candidature\n- Le sue spese\n\nSei sicura di voler procedere?');">
+                                            <i class="bi bi-person-x-fill"></i> Ban
                                         </button>
-                                    </td>
+                                    </form>
+                                    <?php else: ?>
+                                        <span class="text-muted small"><i class="bi bi-shield-lock"></i> Protetto</span>
+                                    <?php endif; ?>
+                                </td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -108,15 +119,101 @@
                                 </td>
                                     
                                     <!-- Azioni (Bottone Edit/Risolvi) -->
-                                <td class="text-end px-3 align-middle">
-                                    <button type="button" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-pencil"></i> Visualizza
-                                    </button>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+<!-- Azioni (Visualizza) -->
+                                    <td class="text-end px-3 align-middle">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalSegnalazioneHome<?php echo $segnalazione['id_segnalazione']; ?>">
+                                            <i class="bi bi-eye"></i> Visualizza
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- MODALE POP-UP COMPLETO (Dentro il ciclo foreach) -->
+                                <div class="modal fade" id="modalSegnalazioneHome<?php echo $segnalazione['id_segnalazione']; ?>" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-light">
+                                                <h5 class="modal-title fw-bold">Dettaglio Segnalazione #<?php echo $segnalazione['id_segnalazione']; ?></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            
+                                            <div class="modal-body text-start">
+                                                <div class="row g-3">
+                                                    <!-- Info Autore -->
+                                                    <div class="col-md-6">
+                                                        <div class="p-3 border rounded bg-light h-100">
+                                                            <small class="text-uppercase text-muted fw-bold">Segnalato da</small>
+                                                            <p class="mb-0 fw-bold"><?php echo $segnalazione['email_autore']; ?></p>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Info Oggetto -->
+                                                    <div class="col-md-6">
+                                                        <div class="p-3 border rounded bg-light h-100">
+                                                            <small class="text-uppercase text-muted fw-bold">Contenuto Segnalato</small>
+                                                            <?php if(!empty($segnalazione['titolo_annuncio'])): ?>
+                                                                <p class="mb-0 fw-bold text-primary"><?php echo $segnalazione['titolo_annuncio']; ?></p>
+                                                                <small class="text-muted">Creato da: <?php echo $segnalazione['email_creatore_annuncio'] ?? 'N/D'; ?></small>
+                                                            <?php else: ?>
+                                                                <p class="mb-0 fw-bold">Profilo Utente</p>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Motivo e Descrizione -->
+                                                    <div class="col-12">
+                                                        <div class="alert alert-warning mb-0">
+                                                            <strong>Motivo:</strong> <?php echo $segnalazione['motivo']; ?><br>
+                                                            <hr>
+                                                            <p class="mb-0 fst-italic">"<?php echo !empty($segnalazione['descrizione']) ? $segnalazione['descrizione'] : 'Nessuna descrizione extra.'; ?>"</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- FOOTER CON BOTTONI AZIONE FUNZIONANTI -->
+                                            <div class="modal-footer bg-light justify-content-between">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                                                
+                                                <div class="d-flex gap-2">
+                                                    <!-- 1. IGNORA E RISOLVI -->
+                                                    <form action="processa-segnalazione.php" method="POST">
+                                                        <input type="hidden" name="id_segnalazione" value="<?php echo $segnalazione['id_segnalazione']; ?>">
+                                                        <input type="hidden" name="azione" value="annulla_segnalazione">
+                                                        <button type="submit" class="btn btn-success" title="Chiudi segnalazione">
+                                                            <i class="bi bi-check-lg"></i> Ignora
+                                                        </button>
+                                                    </form>
+
+                                                    <?php if(!empty($segnalazione['id_annuncio_segnalato'])): ?>
+                                                        <!-- 2. RIMUOVI ANNUNCIO -->
+                                                        <form action="processa-segnalazione.php" method="POST">
+                                                            <input type="hidden" name="id_segnalazione" value="<?php echo $segnalazione['id_segnalazione']; ?>">
+                                                            <input type="hidden" name="id_annuncio" value="<?php echo $segnalazione['id_annuncio_segnalato']; ?>">
+                                                            <input type="hidden" name="azione" value="elimina_annuncio">
+                                                            <button type="submit" class="btn btn-warning text-dark" onclick="return confirm('Sei sicuro di voler eliminare questo annuncio?');">
+                                                                <i class="bi bi-trash"></i> Elimina
+                                                            </button>
+                                                        </form>
+
+                                                        <!-- 3. RIMUOVI ANNUNCIO & BANNA UTENTE -->
+                                                        <form action="processa-segnalazione.php" method="POST">
+                                                            <input type="hidden" name="id_segnalazione" value="<?php echo $segnalazione['id_segnalazione']; ?>">
+                                                            <input type="hidden" name="id_annuncio" value="<?php echo $segnalazione['id_annuncio_segnalato']; ?>">
+                                                            <!-- Nota: id_creatore_annuncio deve essere presente nella query del DB -->
+                                                            <input type="hidden" name="id_utente" value="<?php echo $segnalazione['id_creatore_annuncio'] ?? ''; ?>">
+                                                            <input type="hidden" name="azione" value="ban_utente">
+                                                            <button type="submit" class="btn btn-danger" onclick="return confirm('ATTENZIONE: Elimini l\'annuncio e BANNI l\'utente per sempre. Confermi?');">
+                                                                <i class="bi bi-person-x-fill"></i> Ban & Del
+                                                            </button>
+                                                        </form>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
