@@ -13,18 +13,25 @@ class DatabaseHelper {
     //AUTENTIFICAZIONE
 
     //verifica pw ed email ed avvia sessione
-    public function checkLogin($email, $password) {
-        $query = "SELECT id_utente, nome, email, password, ruolo, id_casa FROM utenti WHERE email = ?";
+    public function checkLogin($email, $password){
+        $query = "SELECT id_utente, nome, cognome, email, password, ruolo, id_casa FROM utenti WHERE email = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
 
-        // Verifichiamo l'hash della password
-        if ($user && password_verify($password, $user['password'])) {
-            return $user; // Ritorna i dati dell'utente (senza la password)
+        if($result->num_rows == 0){
+            return false; // Utente non trovato
         }
+
+        $user = $result->fetch_assoc();
+        
+
+        if($password == $user['password']){
+            // Password in chiaro corrispondente
+            return $user;
+        } 
+        
         return false;
     }
 
@@ -216,6 +223,7 @@ public function getUtentiByCasa($id_casa) {
 //ANNUNCI
 
     // risposta ad un annuncio
+    // inseririmento nuova candidatura
     public function insertCandidatura($id_annuncio, $nome, $email, $messaggio, $foto) {
         $query = "INSERT INTO candidature (id_annuncio, nome, email, messaggio, foto) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($query);
@@ -226,19 +234,154 @@ public function getUtentiByCasa($id_casa) {
     
     public function getRandomAnnunci($n) {
     // Seleziona n annunci in ordine casuale
-    $query = "SELECT a.*, u.nome as nome_proprietario 
-                  FROM annunci a 
-                  LEFT JOIN utenti u ON a.id_utente = u.id_utente 
-                  ORDER BY RAND() LIMIT ?";
+    $query = "SELECT * FROM annunci ORDER BY RAND() LIMIT ?";
     $stmt = $this->db->prepare($query);
     $stmt->bind_param('i', $n);
     $stmt->execute();
     $result = $stmt->get_result();
 
     return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getNewUsersToday(){
+        // Se non hai la colonna data_iscrizione, questa query fallirà.
+        // Assicurati di aver fatto: ALTER TABLE utenti ADD COLUMN data_iscrizione DATE DEFAULT CURRENT_DATE;
+        
+        // Selezioniamo TUTTO (*) così hai anche ruolo, email, foto, ecc.
+        $query = "SELECT * FROM utenti WHERE dataIscrizione = CURDATE()";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        // Restituisce un array associativo completo (esattamente come getRandomAnnunci)
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function countUsers(){
+        $query = "SELECT COUNT(*) as totale FROM utenti";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row["totale"];
+    }
+
+//creare un annuncio per utenti registrati
+public function insertAnnuncio($titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine) {
+    $query = "INSERT INTO annunci (titolo, descrizione, prezzo, luogo, id_utente, immagine) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ssdsi', $titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine);
+    return $stmt->execute();
+}
+//eliminare un annuncio
+public function deleteAnnuncioUtente($id_annuncio, $id_utente) {
+    $query = "DELETE FROM annunci WHERE id_annuncio = ? AND id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ii', $id_annuncio, $id_utente);
+    return $stmt->execute();
 }
 
-//mostra gli annunci creati dall'utente
+ public function deleteAnnuncio($id_annuncio){
+        // 1. Prima eliminiamo tutte le segnalazioni collegate a questo annuncio
+        // Così non rimangono segnalazioni 'orfane' o 'risolte' inutilmente.
+        $queryReports = "DELETE FROM segnalazioni WHERE id_annuncio_segnalato = ?";
+        $stmtReports = $this->db->prepare($queryReports);
+        $stmtReports->bind_param('i', $id_annuncio);
+        $stmtReports->execute();
+
+        // 2. Poi eliminiamo l'annuncio vero e proprio
+        $queryAnnuncio = "DELETE FROM annunci WHERE id_annuncio = ?";
+        $stmtAnnuncio = $this->db->prepare($queryAnnuncio);
+        $stmtAnnuncio->bind_param('i', $id_annuncio);
+        return $stmtAnnuncio->execute();
+    }
+    public function countAd(){
+        $query = "SELECT COUNT(*) as totale FROM annunci WHERE isActive=1";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row["totale"];
+    }
+
+    public function countReports(){
+        $query = "SELECT COUNT(*) as totale FROM segnalazioni WHERE stato='aperta'";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row["totale"];
+    }
+    
+   public function getSegnalazioni() {
+        $query = "SELECT 
+                    s.id_segnalazione, 
+                    s.motivo, 
+                    s.descrizione, 
+                    s.stato, 
+                    s.data_segnalazione, 
+                    s.id_annuncio_segnalato,    -- FONDAMENTALE PER I BOTTONI
+                    s.id_utente_segnalato,      -- FONDAMENTALE PER I BOTTONI
+                    u_rep.email as email_autore, 
+                    a.titolo as titolo_annuncio,
+                    a.id_utente as id_creatore_annuncio, -- FONDAMENTALE PER IL BAN
+                    u_cre.email as email_creatore_annuncio
+                FROM segnalazioni s
+                LEFT JOIN utenti u_rep ON s.id_autore = u_rep.id_utente
+                LEFT JOIN annunci a ON s.id_annuncio_segnalato = a.id_annuncio
+                LEFT JOIN utenti u_cre ON a.id_utente = u_cre.id_utente
+                WHERE s.stato = 'aperta'
+                ORDER BY s.data_segnalazione DESC";
+    
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+
+    /**
+     * Elimina un utente.
+     * NOTA: Grazie al vincolo ON DELETE CASCADE nel database, 
+     * eliminando l'utente si elimineranno automaticamente tutti i suoi annunci,
+     * le sue segnalazioni e i suoi messaggi. Pulizia totale! 🧹
+     */
+    public function deleteUser($id_utente){
+        $query = "DELETE FROM utenti WHERE id_utente = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id_utente);
+        return $stmt->execute();
+    }
+
+    /**
+     * Segna una segnalazione come risolta.
+     */
+    public function resolveReport($id_segnalazione){
+        $query = "UPDATE segnalazioni SET stato = 'risolta' WHERE id_segnalazione = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id_segnalazione);
+        return $stmt->execute();
+    }
+
+    /**
+     * Aggiorna lo stato di una segnalazione (es. da 'aperta' a 'risolta').
+     */
+    public function updateSegnalazioneStatus($id_segnalazione, $stato){
+        $query = "UPDATE segnalazioni SET stato = ? WHERE id_segnalazione = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("risolta", $stato, $id_segnalazione);
+        return $stmt->execute();
+    }
+
+    public function getAllUsers(){
+        $stmt = $this->db->prepare("SELECT * FROM utenti ORDER BY dataIscrizione DESC");
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    //mostra gli annunci creati dall'utente
 public function getAnnunciByUtente($id_utente) {
     $query = "SELECT a.*, u.nome FROM annunci a 
               JOIN utenti u ON a.id_utente = u.id_utente 
@@ -253,113 +396,6 @@ public function getAnnunciByUtente($id_utente) {
 public function getAllAnnunci() {
     $query = "SELECT a.*, u.nome FROM annunci a JOIN utenti u ON a.id_utente = u.id_utente ORDER BY data_pubblicazione DESC";
     return $this->db->query($query)->fetch_all(MYSQLI_ASSOC);
-}
-
-//creare un annuncio per utenti registrati
-public function insertAnnuncio($titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine) {
-    $query = "INSERT INTO annunci (titolo, descrizione, prezzo, luogo, id_utente, immagine) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $this->db->prepare($query);
-    $stmt->bind_param('ssdsi', $titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine);
-    return $stmt->execute();
-}
-//eliminare un annuncio
-public function deleteAnnuncio($id_annuncio, $id_utente) {
-    $query = "DELETE FROM annunci WHERE id_annuncio = ? AND id_utente = ?";
-    $stmt = $this->db->prepare($query);
-    $stmt->bind_param('ii', $id_annuncio, $id_utente);
-    return $stmt->execute();
-}
-
-//modificare annuncio x Admin
-public function updateAnnuncio($id_annuncio, $titolo, $descrizione, $prezzo, $luogo, $id_utente) {
-    $query = "UPDATE annunci SET titolo = ?, descrizione = ?, prezzo = ?, luogo = ? 
-              WHERE id_annuncio = ? AND id_utente = ?";
-    $stmt = $this->db->prepare($query);
-    $stmt->bind_param('ssdiii', $titolo, $descrizione, $prezzo, $luogo, $id_annuncio, $id_utente);
-    
-    return $stmt->execute();
-}
-
-public function getAnnuncioById($id_annuncio) {
-    $query = "SELECT * FROM annunci WHERE id_annuncio = ?";
-    $stmt = $this->db->prepare($query);
-    $stmt->bind_param('i', $id_annuncio);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->fetch_assoc();
-}
-//PULIZIE
-
-public function getPulizieByCasa($id_casa){
-    $query= "SELECT t.*, u.nome as assegnato_a_nome
-             FROM turni_pulizie t
-             JOIN utenti u ON t.assegnato_a = u.id_utente
-             WHERE t.id_casa = ?
-             ORDER BY t.data_scadenza ASC";
-    $stmt= $this->db->prepare($query);
-    $stmt->bind_param('i', $id_casa);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
-
-// Segna un turno pulizie come completato 
-public function setTurnoCompletato($id_turno) {
-    $query = "UPDATE turni_pulizie SET completato = 1 WHERE id_turno = ?";
-    $stmt = $this->db->prepare($query);
-    $stmt->bind_param('i', $id_turno);
-    return $stmt->execute();
-}
-
-
-//SEGNALAZIONI
-
-// Inserisce una nuova segnalazione nel database
-public function insertSegnalazione($id_autore, $id_annuncio_segnalato, $id_utente_segnalato, $motivo, $descrizione) {
-    $query = "INSERT INTO segnalazioni (id_autore, id_annuncio_segnalato, id_utente_segnalato, motivo, descrizione) 
-              VALUES (?, ?, ?, ?, ?)";
-    $stmt = $this->db->prepare($query);
-    // 'iiiss' indica: int, int, int, string, string
-    $stmt->bind_param('iiiss', $id_autore, $id_annuncio_segnalato, $id_utente_segnalato, $motivo, $descrizione);
-    
-    return $stmt->execute();
-}
-
-//RECUPERO PW
-//salva token con scadenza a 30 minuti
-public function setRecoveryToken($email, $token) {
-    // Calcoliamo la data attuale + 30 minuti
-    $scadenza = date("Y-m-d H:i:s", strtotime('+30 minutes'));
-    
-    $query = "UPDATE utenti SET password_token = ?, token_scadenza = ? WHERE email = ?";
-    $stmt = $this->db->prepare($query);
-    $stmt->bind_param('sss', $token, $scadenza, $email);
-    
-    return $stmt->execute();
-}
-
-//cerca utente in base ai token attivi
-public function getUserByToken($token) {
-    // NOW()  restituisce l'orario attuale del server
-    $query = "SELECT * FROM utenti WHERE password_token = ? AND token_scadenza > NOW()";
-    $stmt = $this->db->prepare($query);
-    $stmt->bind_param('s', $token);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    return $result->fetch_assoc(); // Ritorna l'array dell'utente o null se non trovato/scaduto
-}
-
-//aggiorna pw con quella nuova
-public function updatePwAndRemoveToken($id_utente, $new_password) {
-    // Criptiamo sempre la password prima di salvarla
-    $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
-    
-    // Settiamo token e scadenza a NULL così il link non sarà più riutilizzabile
-    $query = "UPDATE utenti SET password = ?, password_token = NULL, token_scadenza = NULL WHERE id_utente = ?";
-    $stmt = $this->db->prepare($query);
-    $stmt->bind_param('si', $password_hash, $id_utente);
-    
-    return $stmt->execute();
 }
 
 }
