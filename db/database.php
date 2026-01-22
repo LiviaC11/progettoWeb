@@ -153,5 +153,27 @@ class DatabaseHelper {
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
+
+public function checkLogin($email, $password){
+        $query = "SELECT id_utente, nome, cognome, email, password, ruolo, id_casa FROM utenti WHERE email = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows == 0){
+            return false; // Utente non trovato
+        }
+
+        $user = $result->fetch_assoc();
+        
+
+        if($password == $user['password']){
+            // Password in chiaro corrispondente
+            return $user;
+        } 
+        
+        return false;
+    }
 }
 ?>
