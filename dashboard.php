@@ -60,6 +60,8 @@ if ($id_casa) {
     $templateParams["miei_annunci"] = $dbh->getAnnunciByUtente($id_utente);
     $templateParams["spese_recenti"] = $dbh->getRecentExpenses($id_casa, 3);
     $templateParams["prossimo_turno"] = $dbh->getNextCleaningTurn($id_casa);
+        $templateParams["turni_pulizie"] = $dbh->getTurniMeseSuccessivo($id_casa);
+
 }
 
 $templateParams["titolo"] = "CoHappy - Dashboard";
