@@ -46,7 +46,7 @@
             <div class="row align-items-center justify-content-center mx-4">
                 <div class="my-1 bg-light rounded-4 py-3 px-4 shadow-sm row align-items-center">
                     <div class="col-md-8">
-                        <h4 class="pt-2">Ultime Novità</h4>
+                        <h4 id="ultime_news" class="pt-2">Ultime Novità</h4>
                         <p class="col-md-0">Forum interno per ogni unità abitativa!</p>
                     </div>
                     <div class="col-md-4 text-end">

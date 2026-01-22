@@ -11,7 +11,7 @@
                 <h5 class="fw-bold mb-3">🔍 Filtra la ricerca</h5>
                 <form id="form-filtri" class="row g-3" onsubmit="return false;">
                     <div class="col-12 mb-2">
-                         <input type="text" id="filtro-testo" class="form-control" placeholder="Cosa cerchi?">
+                         <input type="text" id="filtro-testo" class="form-control" placeholder="Cosa cerchi?" aria-label="Cerca annunci">
                     </div>
                     <div class="col-md-6">
                         <label for="filtro-dove" class="form-label small fw-bold">Dove</label>
@@ -63,7 +63,7 @@
             </div>
 
             <!-- MODALE DETTAGLIO E FORM CANDIDATURA -->
-            <div class="modal fade" id="modal-<?php echo $annuncio['id_annuncio']; ?>" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="modal-<?php echo $annuncio['id_annuncio']; ?>" tabindex="-1" aria-labelledby="modal-title-<?php echo $annuncio['id_annuncio']; ?>" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content border-0 shadow-lg">
                         <div class="modal-header border-0 pb-0">
@@ -89,25 +89,25 @@
                             
                             <!-- IL FORM CHE ABBIAMO COLLEGATO -->
                             <form method="POST" action="risposta.php" enctype="multipart/form-data">
-                                <!-- Passiamo l'ID dell'annuncio nascosto, fondamentale! -->
+                                <!-- Passiamo l'ID dell'annuncio nascosto-->
                                 <input type="hidden" name="id_annuncio" value="<?php echo $annuncio['id_annuncio']; ?>">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold small">Tuo Nome</label>
-                                        <input type="text" name="nome" class="form-control" placeholder="Come ti chiami?" required>
+                                        <label for="nome-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold small">Tuo Nome</label>
+                                        <input type="text" id="nome-<?php echo $annuncio['id_annuncio']; ?>" name="nome" class="form-control" placeholder="Come ti chiami?" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold small">Tua Email</label>
-                                        <input type="email" name="email" class="form-control" placeholder="latua@email.it" required>
+                                        <label for="email-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold small">Tua Email</label>
+                                        <input type="email" id="email-<?php echo $annuncio['id_annuncio']; ?>" name="email" class="form-control" placeholder="latua@email.it" required>
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold small">Parlaci di te</label>
-                                    <textarea name="messaggio" class="form-control" rows="3" placeholder="Perché vuoi proprio questa casa?" required></textarea>
+                                    <label for="messaggio-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold small">Parlaci di te</label>
+                                    <textarea name="messaggio" id="messaggio-<?php echo $annuncio['id_annuncio']; ?>" class="form-control" rows="3" placeholder="Perché vuoi proprio questa casa?" required></textarea>
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label fw-bold small">Allega una tua foto</label>
-                                    <input type="file" name="foto" class="form-control" accept="image/*">
+                                    <label for="foto-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold small">Allega una tua foto</label>
+                                    <input type="file" id="foto-<?php echo $annuncio['id_annuncio']; ?>" name="foto" class="form-control" accept="image/*">
                                     <div class="form-text small">Così i coinquilini sanno chi sei! ✨</div>
                                 </div>
                                 <button type="submit" class="btn btn-success w-100 fw-bold py-2 shadow-sm">Invia Candidatura 💅</button>
