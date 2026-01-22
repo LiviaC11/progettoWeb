@@ -29,7 +29,7 @@ if(isset($_POST["email"]) && isset($_POST["password"])){
         $_SESSION["ruolo"] = $login_result["ruolo"];
         $_SESSION["id_casa"] = $login_result["id_casa"]; // Potrebbe essere NULL per super_admin
 
-        
+        // --- IL REDIRECT CHE VOLEVI ---
         if($login_result["ruolo"] == 'super_admin'){
             header("Location: superadmin.php"); // Admin va alla sua dashboard
         } else {
