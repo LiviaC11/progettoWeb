@@ -26,7 +26,7 @@
                 $numCandidature = count($annuncio['candidature']);
             ?>
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm overflow-hidden <?php echo $is_active ? '' : 'opacity-75'; ?>">
+                    <div class="card h-100 border-0 shadow-sm overflow-hidden <?php echo $is_active ? '' : 'annuncio-nascosto'; ?>">
                         <div class="position-relative">
                             <img src="<?php echo !empty($annuncio['immagine']) ? htmlspecialchars($annuncio['immagine']) : 'img/nophoto.png'; ?>" 
                                  class="card-img-top" alt="" style="height: 200px; object-fit: cover;">
@@ -36,50 +36,44 @@
                         </div>
                         
                         <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex justify-content-between align-items-start <?php echo $is_active ? 'mb-2' : 'mb-0'; ?>">
                                 <h5 class="card-title fw-bold mb-0 text-truncate"><?php echo htmlspecialchars($annuncio['titolo']); ?></h5>
                                 <span class="text-primary fw-bold"><?php echo number_format($annuncio['prezzo'], 2); ?>€</span>
                             </div>
+                            <?php if($is_active): ?> 
                             <p class="text-muted small mb-3"><i class="bi bi-geo-alt"></i> <?php echo htmlspecialchars($annuncio['luogo']); ?></p>
-                            
-                            <!-- Tasto Candidature con Badge -->
-                            <button class="btn btn-dark w-100 mb-3 fw-bold position-relative" data-bs-toggle="modal" data-bs-target="#modalCandidature<?php echo $annuncio['id_annuncio']; ?>">
-                                <i class="bi bi-people-fill"></i> Vedi Candidature
-                                <?php if($numCandidature > 0): ?>
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        <?php echo $numCandidature; ?>
-                                    </span>
+                                <button class="btn btn-dark w-100 mb-3 fw-bold position-relative" data-bs-toggle="modal" data-bs-target="#modalCandidature<?php echo $annuncio['id_annuncio']; ?>">
+                                <i class="bi bi-people-fill"></i> Vedi Candidature <?php if($numCandidature > 0): ?>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><?php echo $numCandidature; ?></span>
                                 <?php endif; ?>
-                            </button>
+                                </button><?php endif; ?>
                         </div>
 
                         <div class="card-footer bg-white border-top-0 pb-3 px-3">
                             <div class="d-grid gap-2">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <button class="btn btn-sm btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modalModifica<?php echo $annuncio['id_annuncio']; ?>">
-                                            <i class="bi bi-pencil"></i> Modifica
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" 
-                                           class="btn btn-sm btn-outline-danger w-100" 
-                                           onclick="return confirm('Sicura di voler eliminare?')">
-                                            <i class="bi bi-trash"></i> Elimina
-                                        </a>
-                                    </div>
-                                </div>
                                 <?php if($is_active): ?>
-                                    <a href="processa_annuncio.php?azione=disattiva&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-warning w-100 fw-bold">Nascondi</a>
-                                <?php else: ?>
-                                    <a href="processa_annuncio.php?azione=attiva&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-success w-100 fw-bold">Mostra</a>
-                                <?php endif; ?>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <button class="btn btn-sm btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modalModifica<?php echo $annuncio['id_annuncio']; ?>">
+                                            <i class="bi bi-pencil"></i> Modifica
+                                            </button>
+                                        </div>
+                            <div class="col-6">
+                            <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-outline-danger w-100" onclick="return confirm('Sicura di voler eliminare?')"><i class="bi bi-trash"></i> Elimina
+                            </a>
                             </div>
+                        </div>
+                        <a href="processa_annuncio.php?azione=disattiva&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-warning w-100 fw-bold">Nascondi</a>
+            <?php else: ?>
+                        <a href="processa_annuncio.php?azione=attiva&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-success w-100 fw-bold">Mostra</a>
+            <?php endif; ?>
+
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- MODALE MODIFICA (già esistente) -->
+                <!-- MODALE MODIFICA  -->
                 <div class="modal fade" id="modalModifica<?php echo $annuncio['id_annuncio']; ?>" tabindex="-1" aria-hidden="true">
                     <!-- ... (contenuto modale modifica) ... -->
                 </div>

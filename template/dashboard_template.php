@@ -15,7 +15,8 @@
                     <form action="dashboard.php" method="POST" class="mt-4">
                         <input type="hidden" name="azione" value="unisciti_casa">
                         <div class="input-group mb-3 mx-auto" style="max-width: 450px;">
-                            <input type="text" name="codice_invito" class="form-control form-control-lg" placeholder="Codice Invito (es. CH-1234)" required>
+                            <label for="codice_invito" class="visually-hidden">Codice Invito</label>
+                            <input type="text" id="codice_invito" name="codice_invito" class="form-control form-control-lg" placeholder="Codice Invito (es. CH-1234)" required>
                             <button class="btn btn-primary btn-lg fw-bold" type="submit">Unisciti</button>
                         </div>
                     </form>
@@ -54,7 +55,8 @@
             <div class="col-lg-4">
                 <div class="card shadow-sm border-0 h-100 bg-light">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="fw-bold mb-4 text-primary">📢 I miei annunci</h5>
+                        <h5 class="fw-bold mb-4 text-dark">📢 I miei annunci</h5>
+
                         <?php if(count($templateParams["miei_annunci"]) > 0): ?>
                             <?php 
                             $anteprima = array_slice($templateParams["miei_annunci"], 0, 3);
@@ -70,10 +72,10 @@
                             <?php endforeach; ?>
                             <a href="miei_annunci.php" class="btn btn-outline-dark btn-sm w-100 mt-auto">Vedi tutte</a>
                         <?php else: ?>
-                            <div class="text-center py-3">
-                                <p class="small text-muted">Non ci sono annunci attivi.</p>
+                            <div class="text-center flex-grow-1 d-flex flex-column justify-content-center">
+                                <p class="small text-muted mb-0">Non ci sono annunci attivi.</p>
                                 <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
-                                    <button type="button" class="btn btn-dark btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">Pubblica ora</button>
+                                    <button type="button" class="btn btn-outline-dark btn-sm w-100 mt-auto" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">Pubblica ora</button>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
@@ -253,31 +255,31 @@
                         <input type="hidden" name="id_annuncio" value="<?php echo $annuncio['id_annuncio']; ?>">
                         <div class="modal-body p-4 text-start">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Titolo dell'annuncio</label>
-                                <input type="text" name="titolo" class="form-control" value="<?php echo htmlspecialchars($annuncio['titolo']); ?>" required>
+                                <label for="titolo_<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold" >Titolo dell'annuncio</label>
+                                <input type="text" id="titolo_<?php echo $annuncio['id_annuncio']; ?>" name="titolo" class="form-control" value="<?php echo htmlspecialchars($annuncio['titolo']); ?>" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Descrizione dettagliata</label>
-                                <textarea name="descrizione" class="form-control" rows="4" required><?php echo htmlspecialchars($annuncio['descrizione']); ?></textarea>
+                                <label for="desc_<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Descrizione dettagliata</label>
+                                <textarea name="descrizione" id="desc_<?php echo $annuncio['id_annuncio']; ?>" class="form-control" rows="4" required><?php echo htmlspecialchars($annuncio['descrizione']); ?></textarea>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">Prezzo mensile (€)</label>
-                                    <input type="number" name="prezzo" step="0.01" class="form-control" value="<?php echo $annuncio['prezzo']; ?>" required>
+                                    <label for="prezzo_<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Prezzo mensile (€)</label>
+                                    <input type="number" name="prezzo" step="0.01" id="prezzo_<?php echo $annuncio['id_annuncio']; ?>" class="form-control" value="<?php echo $annuncio['prezzo']; ?>" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">Città / Zona</label>
-                                    <input type="text" name="luogo" class="form-control" value="<?php echo htmlspecialchars($annuncio['luogo']); ?>" required>
+                                    <label for="luogo_<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Città / Zona</label>
+                                    <input type="text" id="luogo_<?php echo $annuncio['id_annuncio']; ?>" name="luogo" class="form-control" value="<?php echo htmlspecialchars($annuncio['luogo']); ?>" required>
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Cambia foto (opzionale)</label>
-                                <input type="file" name="immagine" class="form-control" accept="image/*">
+                                <label for="img_<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold">Cambia foto (opzionale)</label>
+                                <input type="file" id="img_<?php echo $annuncio['id_annuncio']; ?>" name="immagine" class="form-control" accept="image/*">
                                 <div class="form-text">Carica una nuova foto per sostituire quella attuale.</div>
                             </div>
                         </div>
                         <div class="modal-footer bg-light">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Annulla</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Annulla">Annulla</button>
                             <button type="submit" class="btn btn-warning fw-bold px-4" aria-label="Salva modifiche">Salva Modifiche</button>
                         </div>
                     </form>
@@ -296,9 +298,18 @@
                 <div class="modal-body p-4">
                     <div class="display-6 mb-3">🏠</div>
                     <h5 class="fw-bold mb-2">Codice della Casa</h5>
-                    <div class="bg-light p-3 rounded-3 border border-primary border-dashed">
-                        <span class="h4 fw-bold text-primary"><?php echo $templateParams["utente"]["codice_invito"] ?? "CH-NON-DISP"; ?></span>
-                    </div>
+                    <div class="bg-light p-3 rounded-3 border border-primary border-dashed d-flex flex-column gap-2">
+                    <span class="h4 fw-bold text-primary mb-0">
+                        <?php echo $templateParams["utente"]["codice_invito"] ?? "CH-NON-DISP"; ?>
+                    </span>
+                    
+                    <button type="button" 
+                            class="btn btn-sm btn-link text-decoration-none btn-copy-code" 
+                            data-code="<?php echo $templateParams["utente"]["codice_invito"]; ?>"
+                            onclick="copyToClipboard()">
+                        <i class="bi bi-clipboard"></i> Copia codice
+                    </button>
+                </div>
                 </div>
             </div>
         </div>

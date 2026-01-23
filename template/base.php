@@ -48,7 +48,7 @@
                     </ul>
                     <div class="d-flex align-items-center">
                         <?php if(isset($_SESSION["id_utente"])): ?>
-                            <span class="text-white me-3 small">Ciao, <strong><?php echo htmlspecialchars($_SESSION["nome"]); ?></strong></span>
+                            <a href="dashboard.php" class="text-white me-3 small text-decoration-none px-2 py-1 rounded" aria-label="Vai alla tua dashboard personale">Ciao, <strong><?php echo htmlspecialchars($_SESSION["nome"]); ?></strong></a>
                             <a href="logout.php" class="btn btn-outline-light btn-sm fw-bold">Logout</a>
                         <?php else: ?>
                             <a href="login.php" class="btn btn-light text-primary fw-bold text-black">Login</a>
@@ -89,7 +89,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/cookie.js"></script>
-
+    <script src="js/validazione.js"></script>
+    <script src="js/dashboard.js"></script>
     <?php if(basename($_SERVER['PHP_SELF']) == 'annunci.php'): ?>
         <script src="js/annunci.js"></script>
     <?php endif; ?>
