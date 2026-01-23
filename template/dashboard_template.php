@@ -297,9 +297,18 @@
                 <div class="modal-body p-4">
                     <div class="display-6 mb-3">🏠</div>
                     <h5 class="fw-bold mb-2">Codice della Casa</h5>
-                    <div class="bg-light p-3 rounded-3 border border-primary border-dashed">
-                        <span class="h4 fw-bold text-primary"><?php echo $templateParams["utente"]["codice_invito"] ?? "CH-NON-DISP"; ?></span>
-                    </div>
+                    <div class="bg-light p-3 rounded-3 border border-primary border-dashed d-flex flex-column gap-2">
+                    <span class="h4 fw-bold text-primary mb-0">
+                        <?php echo $templateParams["utente"]["codice_invito"] ?? "CH-NON-DISP"; ?>
+                    </span>
+                    
+                    <button type="button" 
+                            class="btn btn-sm btn-link text-decoration-none btn-copy-code" 
+                            data-code="<?php echo $templateParams["utente"]["codice_invito"]; ?>"
+                            onclick="copyToClipboard()">
+                        <i class="bi bi-clipboard"></i> Copia codice
+                    </button>
+                </div>
                 </div>
             </div>
         </div>

@@ -89,7 +89,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/cookie.js"></script>
-
+    <script src="js/validazione.js"></script>
+    <script src="js/dashboard.js"></script>
     <?php if(basename($_SERVER['PHP_SELF']) == 'annunci.php'): ?>
         <script src="js/annunci.js"></script>
     <?php endif; ?>
