@@ -191,13 +191,16 @@ public function getAnnunciByUtente($idUtente) {
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
-    public function insertAnnuncio($titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine) {
-        // Ora inseriamo il percorso completo o il default
-        $query = "INSERT INTO annunci (titolo, descrizione, prezzo, luogo, id_utente, immagine) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param('ssdsis', $titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine);
-        return $stmt->execute();
-    }
+ public function insertAnnuncio($titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine) {
+    // Tabella: annunci | Colonne: titolo, descrizione, prezzo, luogo, id_utente, immagine
+    $query = "INSERT INTO annunci (titolo, descrizione, prezzo, luogo, id_utente, immagine) VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $this->db->prepare($query);
+    
+    // "ssdsis" -> string, string, double(prezzo è decimal), string, int, string
+    $stmt->bind_param("ssdsis", $titolo, $descrizione, $prezzo, $luogo, $id_utente, $immagine);
+    
+    return $stmt->execute();
+}
 
     public function updateAnnuncio($idAnnuncio, $titolo, $descrizione, $prezzo, $luogo, $immagine = null) {
         if($immagine) {

@@ -1,34 +1,12 @@
 <?php
 require_once 'bootstrap.php';
+require_once 'utils/functions.php';
 
 if(!isset($_SESSION["id_utente"])){
     header("location: login.php");
     exit();
 }
 
-/**
- * Funzione per gestire l'upload delle immagini nella cartella img/
- * Nota: Resta qui o va in utility, MAI nel DatabaseHelper!
- */
-function handleImageUpload($file, $isUpdate = false) {
-    if(isset($file) && $file['error'] == 0){
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        // Genero un nome univoco per evitare conflitti tra annunci
-        $fileName = uniqid('annuncio_') . "." . $ext;
-        
-        // DESTINAZIONE: Cambiata da "upload/" a "img/" come richiesto ✨
-        $targetPath = "img/" . $fileName; 
-        
-        if(move_uploaded_file($file['tmp_name'], $targetPath)){
-            return $targetPath; // Ritorna "img/nomefoto.png" da salvare nel DB
-        }
-    }
-    
-    // Se non viene caricata nessuna foto:
-    // In fase di update (modifica) ritorniamo null per non sovrascrivere quella vecchia
-    // In fase di inserimento nuovo, mettiamo la foto di default
-    return $isUpdate ? null : "img/nophoto.png";
-}
 
 // --- AZIONE: INSERISCI NUOVO ---
 if(isset($_POST["azione"]) && $_POST["azione"] == "inserisci"){

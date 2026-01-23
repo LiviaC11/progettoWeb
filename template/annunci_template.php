@@ -67,7 +67,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content border-0 shadow-lg">
                         <div class="modal-header border-0 pb-0">
-                            <h4 class="fw-bold modal-title"><?php echo htmlspecialchars($annuncio['titolo']); ?></h4>
+                            <h4 class="fw-bold modal-title" id="modal-title-<?php echo $annuncio['id_annuncio']; ?>"> <?php echo htmlspecialchars($annuncio['titolo']); ?></h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body p-4">
