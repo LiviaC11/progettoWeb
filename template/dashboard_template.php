@@ -55,7 +55,8 @@
             <div class="col-lg-4">
                 <div class="card shadow-sm border-0 h-100 bg-light">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="fw-bold mb-4 text-primary">📢 I miei annunci</h5>
+                        <h5 class="fw-bold mb-4 text-dark">📢 I miei annunci</h5>
+
                         <?php if(count($templateParams["miei_annunci"]) > 0): ?>
                             <?php 
                             $anteprima = array_slice($templateParams["miei_annunci"], 0, 3);
@@ -71,10 +72,10 @@
                             <?php endforeach; ?>
                             <a href="miei_annunci.php" class="btn btn-outline-dark btn-sm w-100 mt-auto">Vedi tutte</a>
                         <?php else: ?>
-                            <div class="text-center py-3">
-                                <p class="small text-muted">Non ci sono annunci attivi.</p>
+                            <div class="text-center flex-grow-1 d-flex flex-column justify-content-center">
+                                <p class="small text-muted mb-0">Non ci sono annunci attivi.</p>
                                 <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
-                                    <button type="button" class="btn btn-dark btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">Pubblica ora</button>
+                                    <button type="button" class="btn btn-outline-dark btn-sm w-100 mt-auto" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">Pubblica ora</button>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
