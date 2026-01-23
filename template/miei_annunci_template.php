@@ -85,23 +85,23 @@
                     <input type="hidden" name="id_annuncio" value="<?php echo $annuncio['id_annuncio']; ?>">
                     
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Titolo</label>
-                        <input type="text" name="titolo" class="form-control" value="<?php echo htmlspecialchars($annuncio['titolo']); ?>" required>
+                        <label for="titolo<?php echo $annuncio['id_annuncio']; ?>" class="form-label small fw-bold">Titolo</label>
+                        <input type="text" id="titolo<?php echo $annuncio['id_annuncio']; ?>"name="titolo" class="form-control" value="<?php echo htmlspecialchars($annuncio['titolo']); ?>" required>
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Descrizione</label>
-                        <textarea name="descrizione" class="form-control" rows="3"><?php echo htmlspecialchars($annuncio['descrizione']); ?></textarea>
+                        <label for="desc<?php echo $annuncio['id_annuncio']; ?>" class="form-label small fw-bold">Descrizione</label>
+                        <textarea name="descrizione" id="desc<?php echo $annuncio['id_annuncio']; ?>" class="form-control" rows="3"><?php echo htmlspecialchars($annuncio['descrizione']); ?></textarea>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label small fw-bold">Prezzo (€)</label>
-                            <input type="number" step="0.01" name="prezzo" class="form-control" value="<?php echo $annuncio['prezzo']; ?>" required>
+                            <label for="prezzo<?php echo $annuncio['id_annuncio']; ?>" class="form-label small fw-bold">Prezzo (€)</label>
+                            <input type="number" id="prezzo<?php echo $annuncio['id_annuncio']; ?>" step="0.01" name="prezzo" class="form-control" value="<?php echo $annuncio['prezzo']; ?>" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label small fw-bold">Luogo</label>
-                            <input type="text" name="luogo" class="form-control" value="<?php echo htmlspecialchars($annuncio['luogo']); ?>" required>
+                            <label for="luogo<?php echo $annuncio['id_annuncio']; ?>" class="form-label small fw-bold">Luogo</label>
+                            <input type="text" id="luogo<?php echo $annuncio['id_annuncio']; ?>" name="luogo" class="form-control" value="<?php echo htmlspecialchars($annuncio['luogo']); ?>" required>
                         </div>
                     </div>
                 </div>
