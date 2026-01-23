@@ -48,7 +48,7 @@
                     </ul>
                     <div class="d-flex align-items-center">
                         <?php if(isset($_SESSION["id_utente"])): ?>
-                            <span class="text-white me-3 small">Ciao, <strong><?php echo htmlspecialchars($_SESSION["nome"]); ?></strong></span>
+                            <a href="dashboard.php" class="text-white me-3 small text-decoration-none" aria-label="Vai alla tua dashboard personale">Ciao, <strong class="text-decoration-underline"><?php echo htmlspecialchars($_SESSION["nome"]); ?></strong></a>
                             <a href="logout.php" class="btn btn-outline-light btn-sm fw-bold">Logout</a>
                         <?php else: ?>
                             <a href="login.php" class="btn btn-light text-primary fw-bold text-black">Login</a>
