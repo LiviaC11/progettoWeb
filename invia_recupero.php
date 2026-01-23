@@ -3,19 +3,16 @@ require_once 'bootstrap.php';
 
 if(isset($_POST["email"])) {
     $email = $_POST["email"];
-    
-    // 1. Genera il token
-    $token = bin2hex(random_bytes(32)); 
-    
-    // 2. Salva il token nel DB tramite DatabaseHelper
-    $successo = $dbh->setRecoveryToken($email, $token);
-    
-    if($successo) {
-        // In un sito reale sarebbe inviato tramite email
-        //x testarlo senza bisogno di email facciamo comparire il link sullo schermo
-        echo "Link di recupero generato: <a href='recupero.php?token=$token'>Recupera Password</a>";
+    $token = bin2hex(random_bytes(32));
+    if($dbh->setRecoveryToken($email, $token)) {
+        // Prepariamo i dati per il template invece di fare "echo"
+        $templateParams["messaggio_successo"] = "Link di recupero generato (Simulazione Locale):";
+        $templateParams["link_generato"] = "recupero.php?token=$token";
     } else {
-        echo "Email non trovata.";
+        $templateParams["errore"] = "Email non trovata o errore nel sistema.";
     }
 }
+$templateParams["titolo"] = "CoHappy - Invio Recupero";
+$templateParams["nome"] = "template/conferma_invio_recupero.php"; // Crea questo file o usa uno esistente
+require 'template/base.php';
 ?>

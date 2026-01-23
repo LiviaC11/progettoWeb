@@ -89,6 +89,33 @@ class DatabaseHelper {
         return $stmt->execute();
     }
 
+    //Token per recupero pw
+    public function setRecoveryToken($email, $token) {
+    // Il token scade dopo 1 ora
+    $query = "UPDATE utenti SET recovery_token = ?, token_scadenza = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('ss', $token, $email);
+    return $stmt->execute();
+}
+
+    // Verifica se il token è valido e non scaduto
+    public function getUserByToken($token) {
+    $query = "SELECT id_utente FROM utenti WHERE recovery_token = ? AND token_scadenza > NOW()";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('s', $token);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+    // Aggiorna la password e cancella il token usato
+    public function updatePwAndRemoveToken($id_utente, $new_pwd) {
+    // Nota: in produzione usa password_hash($new_pwd, PASSWORD_DEFAULT)
+    $query = "UPDATE utenti SET password = ?, recovery_token = NULL, token_scadenza = NULL WHERE id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('si', $new_pwd, $id_utente);
+    return $stmt->execute();
+}
+
     // --- DASHBOARD & CASA ---
 
     public function getHouseRanking($id_casa) {
