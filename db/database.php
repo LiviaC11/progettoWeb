@@ -249,9 +249,14 @@ public function getAnnunciByUtente($idUtente) {
     }
 
     public function getAnnunci() {
-        $stmt = $this->db->prepare("SELECT * FROM annunci WHERE isActive = 1 ORDER BY data_pubblicazione DESC");
+        $query = "SELECT a.*, u.nome FROM annunci a 
+              LEFT JOIN utenti u ON a.id_utente = u.id_utente 
+              WHERE a.isActive = 1 
+              ORDER BY a.data_pubblicazione DESC";
+        $stmt = $this->db->prepare($query);
         $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function getAllAnnunci() {

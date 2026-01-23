@@ -6,6 +6,7 @@ if(!isset($_SESSION["id_utente"])){
     header("location: login.php");
     exit();
 }
+
 // Gestione della modifica annuncio
 if(isset($_POST["azione"]) && $_POST["azione"] === "modifica") {
     $id = $_POST["id_annuncio"];
