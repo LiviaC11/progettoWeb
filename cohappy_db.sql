@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 21, 2026 alle 10:56
+-- Creato il: Gen 22, 2026 alle 20:57
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -33,17 +33,20 @@ CREATE TABLE `annunci` (
   `descrizione` text DEFAULT NULL,
   `prezzo` decimal(10,2) DEFAULT NULL,
   `luogo` varchar(255) DEFAULT NULL,
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
   `id_utente` int(11) DEFAULT NULL,
   `data_pubblicazione` timestamp NOT NULL DEFAULT current_timestamp(),
-  `isActive` tinyint(1) NOT NULL DEFAULT 1
+  `immagine` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dump dei dati per la tabella `annunci`
 --
 
-INSERT INTO `annunci` (`id_annuncio`, `titolo`, `descrizione`, `prezzo`, `luogo`, `id_utente`, `data_pubblicazione`, `isActive`) VALUES
-(1, 'Cercasi 2 coinquilini', 'Casa a 10 min dalla stazione e dall\'università, posizione strategica. Sono disponibili due singole. La casa ha un piccolo cortile dove poter riporre le bici o altri mezzi di trasporto, c\'è una sala-cucina in comune molto grande ed un bagno da condividere al piano superiore, sempre al piano superiore si trovano 2 delle tre camere da letto totali. ', 250.00, 'Cesena', 2, '2026-01-20 17:14:47', 1);
+INSERT INTO `annunci` (`id_annuncio`, `titolo`, `descrizione`, `prezzo`, `luogo`, `isActive`, `id_utente`, `data_pubblicazione`, `immagine`) VALUES
+(1, 'Suite Imperiale in Centro', 'Stanza singola enorme con bagno privato e vista sui tetti. Solo per chi ha stile.', 550.00, 'Bologna', 1, 2, '2026-01-10 09:00:00', 'img/annuncio_suite.jpg'),
+(2, 'Doppia per amanti del caos', 'Cerchiamo coinquilino socievole per condividere una doppia coloratissima.', 300.00, 'Cesena', 1, 5, '2026-01-12 10:30:00', 'img/annuncio_doppia.jpg'),
+(3, 'Singola minimalista (molto)', 'Piccola ma accogliente. Praticamente un letto e una mensola.', 250.00, 'Forlì', 0, 2, '2026-01-15 08:00:00', 'img/nophoto.png');
 
 -- --------------------------------------------------------
 
@@ -60,6 +63,14 @@ CREATE TABLE `candidature` (
   `foto` varchar(255) DEFAULT NULL,
   `data_invio` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `candidature`
+--
+
+INSERT INTO `candidature` (`id_candidatura`, `id_annuncio`, `nome`, `email`, `messaggio`, `foto`, `data_invio`) VALUES
+(1, 1, 'Elena Galli', 'elena@cerca.it', 'Amo quella stanza è troppo nelle mie corde! Sono ordinata e porto sempre il caffè.', 'img/candidato_elena.jpg', '2026-01-21 14:00:00'),
+(2, 1, 'Davide Foschi', 'davide@cerca.it', 'Ciao! Studio ingegneria e sono un tipo tranquillo. La stanza sembra perfetta.', 'img/nophoto.png', '2026-01-22 09:00:00');
 
 -- --------------------------------------------------------
 
@@ -78,7 +89,9 @@ CREATE TABLE `case` (
 --
 
 INSERT INTO `case` (`id_casa`, `nome_casa`, `codice_invito`) VALUES
-(2, 'AP007', '99BD152E');
+(1, 'Penthouse delle Baddies', 'BADGIRLS'),
+(2, 'Villa Smeralda Bologna', 'VILLA777'),
+(3, 'Loft degli Artisti Cesena', 'ARTISTI9');
 
 -- --------------------------------------------------------
 
@@ -92,6 +105,15 @@ CREATE TABLE `lista_spesa` (
   `nome_prodotto` varchar(100) NOT NULL,
   `preso` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `lista_spesa`
+--
+
+INSERT INTO `lista_spesa` (`id_prodotto`, `id_unita`, `nome_prodotto`, `preso`) VALUES
+(1, 1, 'Latte di Mandorla', 0),
+(2, 2, 'Avocado per toast iconici', 1),
+(3, 1, 'Sapone piatti bio', 0);
 
 -- --------------------------------------------------------
 
@@ -110,6 +132,14 @@ CREATE TABLE `segnalazioni` (
   `data_segnalazione` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dump dei dati per la tabella `segnalazioni`
+--
+
+INSERT INTO `segnalazioni` (`id_segnalazione`, `id_autore`, `id_annuncio_segnalato`, `id_utente_segnalato`, `motivo`, `descrizione`, `stato`, `data_segnalazione`) VALUES
+(1, 3, 2, NULL, 'Spam', 'Questo annuncio è un fake, non risponde nessuno.', 'aperta', '2026-01-21 17:00:00'),
+(2, 6, NULL, 7, 'Comportamento inappropriato', 'L utente scrive messaggi strani in privato.', 'in_lavorazione', '2026-01-22 08:00:00');
+
 -- --------------------------------------------------------
 
 --
@@ -125,6 +155,16 @@ CREATE TABLE `spese` (
   `id_casa` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dump dei dati per la tabella `spese`
+--
+
+INSERT INTO `spese` (`id_spesa`, `descrizione`, `importo`, `data_spesa`, `chi_ha_pagato`, `id_casa`) VALUES
+(1, 'Carta igienica 4 veli (Lusso)', 15.50, '2026-01-18', 3, 1),
+(2, 'Bolletta Luce Dicembre', 120.00, '2026-01-10', 2, 1),
+(3, 'Detersivi e spugne', 22.30, '2026-01-15', 5, 2),
+(4, 'Pizza di gruppo', 45.00, '2026-01-20', 6, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -137,9 +177,18 @@ CREATE TABLE `turni_pulizie` (
   `data_scadenza` date NOT NULL,
   `assegnato_a` int(11) NOT NULL,
   `id_casa` int(11) NOT NULL,
-  `completato` tinyint(1) DEFAULT 0,
-  `punti_assegnati` int(11) DEFAULT 10
+  `completato` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `turni_pulizie`
+--
+
+INSERT INTO `turni_pulizie` (`id_turno`, `compito`, `data_scadenza`, `assegnato_a`, `id_casa`, `completato`) VALUES
+(1, 'Pulizia Bagno Principale', '2026-01-25', 3, 1, 0),
+(2, 'Cucina e Fornelli', '2026-01-24', 4, 1, 1),
+(3, 'Pavimenti Salone', '2026-01-26', 2, 1, 0),
+(4, 'Buttare il vetro', '2026-01-23', 6, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -156,18 +205,22 @@ CREATE TABLE `utenti` (
   `ruolo` enum('studente','admin_casa','super_admin') DEFAULT 'studente',
   `foto_profilo` varchar(255) DEFAULT 'default_user.png',
   `id_casa` int(11) DEFAULT NULL,
-  `punti` int(11) DEFAULT 0,
-  `dataIscrizione` date NOT NULL DEFAULT curdate(),
-  `password_token` varchar(255) DEFAULT NULL,
-  `token_scadenza` datetime DEFAULT NULL
+  `dataIscrizione` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dump dei dati per la tabella `utenti`
 --
 
-INSERT INTO `utenti` (`id_utente`, `nome`, `cognome`, `email`, `password`, `ruolo`, `foto_profilo`, `id_casa`, `punti`, `dataIscrizione`, `password_token`, `token_scadenza`) VALUES
-(2, 'Margherita', 'Bianchi', 'marghe.bianchi@libero.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'admin_casa', 'default_user.png', 2, 0, '2026-01-20', NULL, NULL);
+INSERT INTO `utenti` (`id_utente`, `nome`, `cognome`, `email`, `password`, `ruolo`, `foto_profilo`, `id_casa`, `dataIscrizione`) VALUES
+(1, 'Morgana', 'Super', 'admin@cohappy.it', 'pass123', 'super_admin', 'img/admin.png', NULL, '2025-12-01'),
+(2, 'Francesca', 'Rossi', 'francesca@baddies.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'admin_casa', 'img/fra_queen.png', 1, '2026-01-01'),
+(3, 'Giulia', 'Neri', 'giulia@studenti.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'studente', 'img/giulia_vibe.png', 1, '2026-01-05'),
+(4, 'Beatrice', 'Sartori', 'bea@studenti.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'studente', 'img/bea_icon.png', 1, '2026-01-10'),
+(5, 'Matteo', 'Rizzi', 'matteo@villa.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'admin_casa', 'img/matteo_king.png', 2, '2026-01-02'),
+(6, 'Luca', 'Verdi', 'luca@erasmus.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'studente', 'img/luca_erasmus.png', 2, '2026-01-15'),
+(7, 'Davide', 'Foschi', 'davide@cerca.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'studente', 'default_user.png', NULL, '2026-01-20'),
+(8, 'Elena', 'Galli', 'elena@cerca.it', '$2y$10$h5rxcmBrwYzRAWyTc8lNSOlbNKevlmHOMKhRD8xHdc/ds8tDPgUgu', 'studente', 'default_user.png', NULL, '2026-01-21');
 
 --
 -- Indici per le tabelle scaricate
@@ -241,13 +294,13 @@ ALTER TABLE `utenti`
 -- AUTO_INCREMENT per la tabella `annunci`
 --
 ALTER TABLE `annunci`
-  MODIFY `id_annuncio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_annuncio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT per la tabella `candidature`
 --
 ALTER TABLE `candidature`
-  MODIFY `id_candidatura` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_candidatura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `case`
@@ -259,31 +312,31 @@ ALTER TABLE `case`
 -- AUTO_INCREMENT per la tabella `lista_spesa`
 --
 ALTER TABLE `lista_spesa`
-  MODIFY `id_prodotto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_prodotto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `segnalazioni`
 --
 ALTER TABLE `segnalazioni`
-  MODIFY `id_segnalazione` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_segnalazione` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT per la tabella `spese`
 --
 ALTER TABLE `spese`
-  MODIFY `id_spesa` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_spesa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT per la tabella `turni_pulizie`
 --
 ALTER TABLE `turni_pulizie`
-  MODIFY `id_turno` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_turno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT per la tabella `utenti`
 --
 ALTER TABLE `utenti`
-  MODIFY `id_utente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_utente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Limiti per le tabelle scaricate
