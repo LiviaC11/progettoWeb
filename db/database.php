@@ -369,13 +369,25 @@ public function activateAnnuncio($id_annuncio) {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-public function checkEmailExists($email) {
-    $query = "SELECT id_utente FROM utenti WHERE email = ?";
-    $stmt = $this->db->prepare($query);
-    $stmt->bind_param('s', $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->num_rows > 0; // Ritorna true se l'email esiste
-}
+    public function checkEmailExists($email) {
+        $query = "SELECT id_utente FROM utenti WHERE email = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->num_rows > 0; // Ritorna true se l'email esiste
+    }
+
+    public function creaSegnalazione($id_annuncio, $id_segnalante, $id_segnalato, $motivo, $descrizione) {
+        // La tabella segnalazioni usa: id_autore, id_annuncio_segnalato, id_utente_segnalato
+        $query = "INSERT INTO segnalazioni (id_autore, id_annuncio_segnalato, id_utente_segnalato, motivo, descrizione, stato) 
+                VALUES (?, ?, ?, ?, ?, 'aperta')";
+        $stmt = $this->db->prepare($query);
+        
+        // 'iiiss' -> id_autore(int), id_annuncio_segnalato(int), id_utente_segnalato(int), motivo(string), descrizione(string)
+        $stmt->bind_param('iiiss', $id_segnalante, $id_annuncio, $id_segnalato, $motivo, $descrizione);
+        
+        return $stmt->execute();
+    }
 }
 ?>

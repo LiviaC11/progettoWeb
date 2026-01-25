@@ -112,6 +112,37 @@
                                 </div>
                                 <button type="submit" class="btn btn-success w-100 fw-bold py-2 shadow-sm">Invia Candidatura 💅</button>
                             </form>
+                            <hr class="my-4">
+<div class="d-flex justify-content-between align-items-center">
+    <p class="small text-muted mb-0">Qualcosa non va? Aiutaci a mantenere la community sicura.</p>
+    <button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="collapse" data-bs-target="#report-<?php echo $annuncio['id_annuncio']; ?>">
+        Segnala Annuncio 🚩
+    </button>
+</div>
+
+<div class="collapse mt-3" id="report-<?php echo $annuncio['id_annuncio']; ?>">
+    <div class="card card-body border-danger bg-light">
+        <form action="invia_segnalazione.php" method="POST">
+            <input type="hidden" name="id_annuncio" value="<?php echo $annuncio['id_annuncio']; ?>">
+            <input type="hidden" name="id_utente_segnalato" value="<?php echo $annuncio['id_utente']; ?>"> 
+            
+            <div class="mb-3">
+                <label class="form-label fw-bold small">Perché stai segnalando questo annuncio?</label>
+                <select name="motivo" class="form-select form-select-sm" required>
+                    <option value="" selected disabled>Scegli un motivo...</option>
+                    <option value="spam">Spam o Truffa</option>
+                    <option value="inappropriato">Contenuto Inappropriato</option>
+                    <option value="falso">Informazioni False</option>
+                    <option value="altro">Altro...</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <textarea name="descrizione" class="form-control form-control-sm" rows="2" placeholder="Aggiungi dettagli (opzionale)"></textarea>
+            </div>
+            <button type="submit" class="btn btn-danger btn-sm w-100 shadow-sm">Invia Segnalazione 💅</button>
+        </form>
+    </div>
+</div>
                         </div>
                     </div>
                 </div>
