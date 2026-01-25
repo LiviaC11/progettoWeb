@@ -18,7 +18,7 @@ if(isset($_POST["azione"]) && $_POST["azione"] === "modifica") {
     // Chiama la funzione nel DB per aggiornare
     $dbh->updateAnnuncio($id, $titolo, $desc, $prezzo, $luogo);
     
-    // Ricarica la pagina per vedere le modifiche
+    // Ricarica la pagina con le modifiche
     header("location: miei_annunci.php");
     exit();
 }
