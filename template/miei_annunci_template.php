@@ -55,7 +55,8 @@
                                     <div class="row g-2">
                                         <div class="col-6">
                                             <button class="btn btn-sm btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modalModifica<?php echo $annuncio['id_annuncio']; ?>">
-                                            <i class="bi bi-pencil"></i> Modifica </button>
+                                            <i class="bi bi-pencil"></i> Modifica
+                                            </button>
                                         </div>
                             <div class="col-6">
                             <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-outline-danger w-100" onclick="return confirm('Sicura di voler eliminare?')"><i class="bi bi-trash"></i> Elimina
@@ -74,44 +75,7 @@
 
                 <!-- MODALE MODIFICA  -->
                 <div class="modal fade" id="modalModifica<?php echo $annuncio['id_annuncio']; ?>" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold">Modifica Annuncio</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="miei_annunci.php" method="POST">
-                <div class="modal-body">
-                    <input type="hidden" name="id_annuncio" value="<?php echo $annuncio['id_annuncio']; ?>">
-                    
-                    <div class="mb-3">
-                        <label for="titolo<?php echo $annuncio['id_annuncio']; ?>" class="form-label small fw-bold">Titolo</label>
-                        <input type="text" id="titolo<?php echo $annuncio['id_annuncio']; ?>"name="titolo" class="form-control" value="<?php echo htmlspecialchars($annuncio['titolo']); ?>" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="desc<?php echo $annuncio['id_annuncio']; ?>" class="form-label small fw-bold">Descrizione</label>
-                        <textarea name="descrizione" id="desc<?php echo $annuncio['id_annuncio']; ?>" class="form-control" rows="3"><?php echo htmlspecialchars($annuncio['descrizione']); ?></textarea>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="prezzo<?php echo $annuncio['id_annuncio']; ?>" class="form-label small fw-bold">Prezzo (€)</label>
-                            <input type="number" id="prezzo<?php echo $annuncio['id_annuncio']; ?>" step="0.01" name="prezzo" class="form-control" value="<?php echo $annuncio['prezzo']; ?>" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="luogo<?php echo $annuncio['id_annuncio']; ?>" class="form-label small fw-bold">Luogo</label>
-                            <input type="text" id="luogo<?php echo $annuncio['id_annuncio']; ?>" name="luogo" class="form-control" value="<?php echo htmlspecialchars($annuncio['luogo']); ?>" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                    <button type="submit" name="azione" value="modifica" class="btn btn-primary fw-bold">Salva Modifiche</button>
-                </div>
-            </form>
-        </div>
-    </div>
+                    <!-- ... (contenuto modale modifica) ... -->
                 </div>
 
                 <!-- NUOVO MODALE CANDIDATURE 💌 -->

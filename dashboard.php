@@ -44,7 +44,8 @@ if(isset($_POST["azione"]) && $_POST["azione"] == "inserisci_annuncio"){
             htmlspecialchars($_POST["descrizione"]),
             $_POST["prezzo"],
             htmlspecialchars($_POST["luogo"]),
-            $id_utente
+            $id_utente,
+            $id_casa
         );
         header("location: dashboard.php?msg=annuncio_pubblicato");
         exit();

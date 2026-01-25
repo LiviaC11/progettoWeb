@@ -249,14 +249,9 @@ public function getAnnunciByUtente($idUtente) {
     }
 
     public function getAnnunci() {
-        $query = "SELECT a.*, u.nome FROM annunci a 
-              LEFT JOIN utenti u ON a.id_utente = u.id_utente 
-              WHERE a.isActive = 1 
-              ORDER BY a.data_pubblicazione DESC";
-        $stmt = $this->db->prepare($query);
+        $stmt = $this->db->prepare("SELECT * FROM annunci WHERE isActive = 1 ORDER BY data_pubblicazione DESC");
         $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
     public function getAllAnnunci() {
@@ -374,5 +369,13 @@ public function activateAnnuncio($id_annuncio) {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+public function checkEmailExists($email) {
+    $query = "SELECT id_utente FROM utenti WHERE email = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->num_rows > 0; // Ritorna true se l'email esiste
+}
 }
 ?>
