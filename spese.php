@@ -19,7 +19,7 @@ if(isset($_GET["azione"]) && $_GET["azione"] == "elimina" && isset($_GET["id"]))
 
 // LOGICA CRUD: Inserimento
 if(isset($_POST["descrizione"]) && isset($_POST["importo"])){
-    $desc = htmlspecialchars($_POST["descrizione"]);
+    $desc = ($_POST["descrizione"]);
     $importo = $_POST["importo"];
     $data = $_POST["data"];
     $dbh->insertSpesa($desc, $importo, $data, $id_utente, $id_casa);

@@ -12,12 +12,9 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-3">
                 <div>
-                    <h5 class="fw-bold mb-1 text-dark"><?php echo $spesa["descrizione"]; ?></h5>
-                    <p class="text-muted small mb-0">
-                        Pagato da: <strong><?php echo $spesa["nome"]; ?></strong> 
-                        il <?php echo date("d/m/Y", strtotime($spesa["data_spesa"])); ?>
-                    </p>
-                </div>
+                   <h5 class="fw-bold mb-1 text-dark"><?php echo htmlspecialchars($spesa["descrizione"]); ?></h5>
+Pagato da: <strong><?php echo htmlspecialchars($spesa["nome"]); ?></strong>
+<div class="small fw-bold text-truncate"><?php echo htmlspecialchars($coinquilino["nome"]); ?></div>
                 <div class="text-end">
                     <span class="h5 fw-bold text-success d-block mb-1">
                         € <?php echo number_format($spesa["importo"], 2); ?>

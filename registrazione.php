@@ -11,9 +11,9 @@ if(isset($_SESSION["id_utente"])){
 if(isset($_POST["email"]) && isset($_POST["password"])){
     
     // 2. Recuperiamo e sanifichiamo i dati SUBITO
-    $email = htmlspecialchars($_POST["email"]);
-    $nome = htmlspecialchars($_POST["nome"]);
-    $cognome = htmlspecialchars($_POST["cognome"]);
+    $email = ($_POST["email"]);
+    $nome = ($_POST["nome"]);
+    $cognome = ($_POST["cognome"]);
     $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
     $scelta_casa = $_POST["scelta_casa"];
 
@@ -24,10 +24,10 @@ $templateParams["errore_registrazione"] = "Email già registrata. <a href='login
         $id_utente = false;
 
         if($scelta_casa == "crea") {
-            $nome_casa = htmlspecialchars($_POST["nome_casa"]);
+            $nome_casa = ($_POST["nome_casa"]);
             $id_utente = $dbh->registerWithNewHouse($nome, $cognome, $email, $password, $nome_casa);
         } elseif ($scelta_casa == "unisciti") {
-            $codice_invito = htmlspecialchars($_POST["codice_invito"]);
+            $codice_invito = ($_POST["codice_invito"]);
             $id_utente = $dbh->registerToExistingHouse($nome, $cognome, $email, $password, $codice_invito);
             
             if(!$id_utente){

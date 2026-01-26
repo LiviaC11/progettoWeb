@@ -114,7 +114,7 @@
                                         <!-- Compito -->
                                         <td>
                                             <span class="fw-bold <?php echo $fatto ? 'text-decoration-line-through' : ''; ?>">
-                                                <?php echo $turno['compito']; ?>
+                                                <?php echo htmlspecialchars($turno['compito']); ?>
                                             </span>
                                         </td>
 
@@ -124,7 +124,7 @@
                                                 <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-2" style="width: 30px; height: 30px; font-size: 0.8rem;">
                                                     <?php echo strtoupper(substr($turno['nome'], 0, 1)); ?>
                                                 </div>
-                                                <span class="small"><?php echo $turno['nome']; ?></span>
+                                                <span class="small"><?php echo htmlspecialchars($turno['nome']); ?></span>
                                             </div>
                                         </td>
 
