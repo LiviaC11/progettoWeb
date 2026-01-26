@@ -23,18 +23,18 @@
                         <input type="hidden" name="azione" value="add_pulizia">
                         
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-uppercase text-muted">Cosa c'è da fare?</label>
-                            <input type="text" name="compito" class="form-control" placeholder="Es. Pulire il bagno, Buttare il vetro..." required>
+                            <label for="duty" class="form-label fw-bold small text-uppercase text-muted">Cosa c'è da fare?</label>
+                            <input type="text" id="duty"  name="compito" class="form-control" placeholder="Es. Pulire il bagno, Buttare il vetro..." required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-uppercase text-muted">Data Scadenza</label>
-                            <input type="date" name="data_scadenza" class="form-control" min="<?php echo date('Y-m-d'); ?>" required>
+                            <label for="scadenza" class="form-label fw-bold small text-uppercase text-muted">Data Scadenza</label>
+                            <input type="date" id="scadenza" name="data_scadenza" class="form-control" min="<?php echo date('Y-m-d'); ?>" required>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-bold small text-uppercase text-muted">Chi lo fa?</label>
-                            <select name="assegnato_a" class="form-select" required>
+                            <label for="assegnato_a" class="form-label fw-bold small text-uppercase text-muted">Chi lo fa?</label>
+                            <select name="assegnato_a" id="assegnato_a" class="form-select" required>
                                 <option value="" selected disabled>Scegli coinquilino...</option>
                                 <?php foreach($templateParams["coinquilini"] as $coinquilino): ?>
                                     <option value="<?php echo $coinquilino['id_utente']; ?>">
@@ -83,7 +83,6 @@
                                         $data = new DateTime($turno['data_scadenza']);
                                         $oggi = new DateTime();
                                         
-                                        // FIX RICHIESTO: Controllo prioritario sul campo 'completato'
                                         // Verifichiamo se esiste 'completato' (che vale 1), altrimenti controlliamo 'stato'
                                         $valore_stato = 0;
                                         if(isset($turno['completato'])){
@@ -134,7 +133,7 @@
                                             <?php if($fatto): ?>
                                                 <span class="text-success fw-bold small">Completato</span>
                                             <?php else: ?>
-                                                <span class="text-warning fw-bold small">Da fare</span>
+                                                <span class="text-warning-emphasis fw-bold small">Da fare</span>
                                             <?php endif; ?>
                                         </td>
 
