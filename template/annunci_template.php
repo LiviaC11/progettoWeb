@@ -4,14 +4,15 @@
         <p class="text-muted">Trova la tua prossima casa o il coinquilino ideale in pochi click.</p>
     </div>
 
-    <!-- SEZIONE FILTRI (sempre al top come noi) -->
+    <!-- SEZIONE FILTRI -->
     <section class="filters mb-5">
         <div class="card shadow-sm border-0">
             <div class="card-body p-4">
                 <h5 class="fw-bold mb-3">🔍 Filtra la ricerca</h5>
                 <form id="form-filtri" class="row g-3" onsubmit="return false;">
                     <div class="col-12 mb-2">
-                         <input type="text" id="filtro-testo" class="form-control" placeholder="Cosa cerchi?" aria-label="Cerca annunci">
+                        <label for="filtro-testo" class="visually-hidden">Cosa cerchi?</label>
+                        <input type="text" id="filtro-testo" class="form-control" placeholder="Cosa cerchi?" ...>
                     </div>
                     <div class="col-md-6">
                         <label for="filtro-dove" class="form-label small fw-bold">Dove</label>
@@ -127,8 +128,8 @@
             <input type="hidden" name="id_utente_segnalato" value="<?php echo $annuncio['id_utente']; ?>"> 
             
             <div class="mb-3">
-                <label class="form-label fw-bold small">Perché stai segnalando questo annuncio?</label>
-                <select name="motivo" class="form-select form-select-sm" required>
+                <label for="motivo-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold small">Perché stai segnalando questo annuncio?</label>
+                <select id="motivo-<?php echo $annuncio['id_annuncio']; ?>" name="motivo" class="form-select form-select-sm" required>
                     <option value="" selected disabled>Scegli un motivo...</option>
                     <option value="spam">Spam o Truffa</option>
                     <option value="inappropriato">Contenuto Inappropriato</option>
@@ -137,7 +138,8 @@
                 </select>
             </div>
             <div class="mb-3">
-                <textarea name="descrizione" class="form-control form-control-sm" rows="2" placeholder="Aggiungi dettagli (opzionale)"></textarea>
+                <label for="desc-<?php echo $annuncio['id_annuncio']; ?>" class="visually-hidden">Dettagli segnalazione</label>
+                <textarea id="desc-<?php echo $annuncio['id_annuncio']; ?>" name="descrizione" class="form-control form-control-sm" rows="2" placeholder="Aggiungi dettagli (opzionale)"></textarea>
             </div>
             <button type="submit" class="btn btn-danger btn-sm w-100 shadow-sm">Invia Segnalazione 💅</button>
         </form>
