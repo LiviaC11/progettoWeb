@@ -1,9 +1,10 @@
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold m-0">💸 Spese Casa</h2>
-        <button class="btn btn-primary rounded-circle shadow" data-bs-toggle="modal" data-bs-target="#addSpesa" style="width: 50px; height: 50px;">
-            <i class="bi bi-plus-lg">+</i>
-        </button>
+       <button class="btn btn-primary rounded-circle shadow" data-bs-toggle="modal" data-bs-target="#addSpesa" style="width: 50px; height: 50px;">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        <span class="visually-hidden">Aggiungi nuova spesa</span>
+    </button>
     </div>
 
    <?php foreach($templateParams["spese"] as $spesa): ?>
