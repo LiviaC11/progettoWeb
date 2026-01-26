@@ -31,24 +31,26 @@
 
     <?php else: ?>
         <!-- SEZIONE DASHBOARD ATTIVA -->
-        <div class="row mb-4 align-items-center">
-            <div class="col-md-8">
-                <h2 class="fw-bold text-dark">Bentornata/o, <?php echo $templateParams["utente"]["nome"]; ?>! 👋</h2>
-                <p class="text-muted mb-0">
-                    Ecco cosa succede nella 
-                    <a href="#" class="fw-bold text-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCodiceInvito">
-                        tua casa 🏠
-                    </a> oggi.
-                </p>
-            </div>
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <a href="dashboard.php?azione=abbandona" 
-                   class="btn btn-outline-danger fw-bold shadow-sm" 
-                   onclick="return confirm('Sei sicuro di voler lasciare questa casa? Non vedrai più spese e turni.')">
-                    🚪 Abbandona Casa
-                </a>
-            </div>
-        </div>
+<div class="row mb-4 align-items-center">
+    <div class="col-md-7">
+        <h2 class="fw-bold text-dark">Bentornata/o, <?php echo $templateParams["utente"]["nome"]; ?>! 👋</h2>
+        <p class="text-muted mb-0">Gestione della tua casa 🏠</p>
+    </div>
+    
+    <div class="col-md-5 d-flex justify-content-md-end gap-2 mt-3 mt-md-0">
+        <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
+            <button class="btn btn-outline-success fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalModificaCasa">
+                ✍️ Modifica Casa
+            </button>
+        <?php endif; ?>
+        
+        <a href="dashboard.php?azione=abbandona" 
+           class="btn btn-outline-danger fw-bold shadow-sm" 
+           onclick="return confirm('Sei sicuro di voler lasciare questa casa?')">
+            🚪 Abbandona
+        </a>
+    </div>
+</div>
 
         <div class="row g-4">
             <!-- Card Annunci Personali -->
@@ -314,5 +316,77 @@
             </div>
         </div>
     </div>
+
+    <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
+<div class="modal fade" id="modalModificaCasa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fw-bold">Gestione Casa e Coinquilini</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                
+                <h6 class="fw-bold text-uppercase text-muted mb-3 small">Dati della Abitazione</h6>
+                <form action="dashboard.php" method="POST" class="row g-3 mb-5 pb-4 border-bottom">
+                    <input type="hidden" name="azione" value="aggiorna_casa">
+                    <div class="col-md-6">
+                        <label for="nome_casa_edit" class="form-label small fw-bold">Nome Casa</label>
+                        <input type="text" id="nome_casa_edit" name="nome_casa" class="form-control" 
+                               value="<?php echo htmlspecialchars($templateParams["utente"]["nome_casa"]); ?>" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="codice_invito_edit" class="form-label small fw-bold">Codice Invito</label>
+                        <input type="text" id="codice_invito_edit" name="codice_invito" class="form-control fw-bold text-primary" 
+                               value="<?php echo htmlspecialchars($templateParams["utente"]["codice_invito"]); ?>" required>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">Salva</button>
+                    </div>
+                </form>
+
+                <h6 class="fw-bold text-uppercase text-muted mb-3 small">Membri della Casa</h6>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nome</th>
+                                <th>Ruolo</th>
+                                <th class="text-end">Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($templateParams["coinquilini_casa"] as $c): ?>
+                            <tr>
+                                <td>
+                                    <span class="fw-bold"><?php echo $c["nome"] . " " . $c["cognome"]; ?></span>
+                                    <?php if($c["id_utente"] == $_SESSION["id_utente"]): ?>
+                                        <span class="badge bg-secondary ms-1">Tu</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <span class="badge <?php echo (isset($c['ruolo']) && $c['ruolo'] == 'admin_casa') ? 'bg-primary' : 'bg-info'; ?>">
+                                        <?php echo $c['ruolo'] ?? 'studente'; ?>
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <?php if($c["id_utente"] != $_SESSION["id_utente"]): ?>
+                                        <form action="dashboard.php" method="POST" class="d-inline">
+                                            <input type="hidden" name="azione" value="espelli_utente">
+                                            <input type="hidden" name="id_target" value="<?php echo $c['id_utente']; ?>">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Espellere?')">Espelli</button>
+                                        </form>
+                                        <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <?php endif; ?>

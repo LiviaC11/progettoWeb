@@ -35,6 +35,26 @@ if(isset($_GET["azione"]) && $_GET["azione"] == "abbandona"){
     }
 }
 
+// Espulsione utente
+if(isset($_POST["azione"]) && $_POST["azione"] == "espelli_utente" && isset($_POST["id_target"])){
+    if($_SESSION["ruolo"] === "admin_casa"){
+        $dbh->leaveHouse($_POST["id_target"]);
+        header("location: dashboard.php?msg=utente_rimosso");
+        exit();
+    }
+}
+
+// Passaggio di proprietà Admin
+if(isset($_POST["azione"]) && $_POST["azione"] == "passa_admin" && isset($_POST["id_target"])){
+    if($_SESSION["ruolo"] === "admin_casa"){
+        if($dbh->passaAdmin($id_utente, $_POST["id_target"])){
+            $_SESSION["ruolo"] = "studente"; // Aggiorniamo subito la sessione dell'ex-admin
+            header("location: dashboard.php?msg=ruolo_trasferito");
+            exit();
+        }
+    }
+}
+
 // Nuovo Annuncio (Verifica RUOLO lato server)
 if(isset($_POST["azione"]) && $_POST["azione"] == "inserisci_annuncio"){
     $user = $dbh->getUserById($id_utente);
@@ -52,7 +72,22 @@ if(isset($_POST["azione"]) && $_POST["azione"] == "inserisci_annuncio"){
     }
 }
 
-// 3. RECUPERO DATI PER IL TEMPLATE
+// Aggiornamento dati Casa (Nome e Codice)
+if(isset($_POST["azione"]) && $_POST["azione"] == "aggiorna_casa"){
+    if($_SESSION["ruolo"] === "admin_casa" && isset($_SESSION["id_casa"])){
+        $nuovo_nome = htmlspecialchars($_POST["nome_casa"]);
+        $nuovo_codice = strtoupper(htmlspecialchars($_POST["codice_invito"]));
+        
+        if($dbh->updateHouse($_SESSION["id_casa"], $nuovo_nome, $nuovo_codice)){
+            header("location: dashboard.php?msg=casa_aggiornata");
+            exit();
+        } else {
+            $templateParams["errore_casa"] = "Errore: il codice potrebbe essere già in uso.";
+        }
+    }
+}
+
+// RECUPERO DATI PER IL TEMPLATE
 // Nota: getUserById ora deve fare la JOIN con la tabella case come visto prima
 $templateParams["utente"] = $dbh->getUserById($id_utente);
 
@@ -61,7 +96,8 @@ if ($id_casa) {
     $templateParams["miei_annunci"] = $dbh->getAnnunciByUtente($id_utente);
     $templateParams["spese_recenti"] = $dbh->getRecentExpenses($id_casa, 3);
     $templateParams["prossimo_turno"] = $dbh->getNextCleaningTurn($id_casa);
-        $templateParams["turni_pulizie"] = $dbh->getTurniMeseSuccessivo($id_casa);
+    $templateParams["turni_pulizie"] = $dbh->getTurniMeseSuccessivo($id_casa);
+    $templateParams["coinquilini_casa"] = $dbh->getCoinquilini($id_casa);
 
 }
 

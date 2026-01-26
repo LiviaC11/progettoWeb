@@ -60,13 +60,16 @@ class DatabaseHelper {
 
     // --- FUNZIONALITA' UTENTE ---
 
-    public function getUserById($id_utente) {
-        $query = "SELECT u.*, c.codice_invito FROM utenti u LEFT JOIN `case` c ON u.id_casa = c.id_casa WHERE u.id_utente = ?";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param('i', $id_utente);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
-    }
+public function getUserById($id_utente) {
+    $query = "SELECT u.*, c.codice_invito, c.nome_casa 
+              FROM utenti u 
+              LEFT JOIN `case` c ON u.id_casa = c.id_casa 
+              WHERE u.id_utente = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param('i', $id_utente);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
 
     public function updateUserPassword($id_utente, $password_hash) {
         $query = "UPDATE utenti SET password = ? WHERE id_utente = ?";
@@ -323,13 +326,6 @@ public function activateAnnuncio($id_annuncio) {
         return $this->db->query("SELECT * FROM utenti ORDER BY dataIscrizione DESC")->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function getCoinquilini($id_casa){
-        $stmt = $this->db->prepare("SELECT id_utente, nome, cognome FROM utenti WHERE id_casa = ?");
-        $stmt->bind_param('i', $id_casa);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
-
     public function insertTurnoPulizia($compito, $data, $assegnato_a, $id_casa){
         $stmt = $this->db->prepare("INSERT INTO turni_pulizie (compito, data_scadenza, assegnato_a, id_casa) VALUES (?, ?, ?, ?)");
         $stmt->bind_param('ssii', $compito, $data, $assegnato_a, $id_casa);
@@ -389,5 +385,41 @@ public function activateAnnuncio($id_annuncio) {
         
         return $stmt->execute();
     }
+
+// Recupera i coinquilini includendo il ruolo
+    public function getCoinquilini($id_casa){
+        $stmt = $this->db->prepare("SELECT id_utente, nome, cognome, ruolo FROM utenti WHERE id_casa = ?");
+        $stmt->bind_param('i', $id_casa);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+    // Passa il ruolo di admin a un altro utente (Transazione SQL per sicurezza)
+    public function passaAdmin($id_vecchio_admin, $id_nuovo_admin) {
+        $this->db->begin_transaction();
+        try {
+            // 1. Il nuovo utente diventa admin
+            $stmt1 = $this->db->prepare("UPDATE utenti SET ruolo = 'admin_casa' WHERE id_utente = ?");
+            $stmt1->bind_param('i', $id_nuovo_admin);
+            $stmt1->execute();
+            
+            // 2. Il vecchio admin torna studente
+            $stmt2 = $this->db->prepare("UPDATE utenti SET ruolo = 'studente' WHERE id_utente = ?");
+            $stmt2->bind_param('i', $id_vecchio_admin);
+            $stmt2->execute();
+            
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollback();
+            return false;
+        }
+    }
+
+    public function updateHouse($id_casa, $nome_casa, $codice_invito) {
+        $query = "UPDATE `case` SET nome_casa = ?, codice_invito = ? WHERE id_casa = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('ssi', $nome_casa, $codice_invito, $id_casa);
+    return $stmt->execute();
+}
 }
 ?>
