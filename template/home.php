@@ -5,7 +5,7 @@
                 <p class="mb-4 lead">La piattaforma ideale per gestire la tua vita da studente fuori sede. <br>Organizza spese, pulizie e trova i coinquilini perfetti.</p>
                 <div class="d-flex justify-content-center gap-3">
                     <a href="login.php" class="btn btn-dark btn-lg px-4" role="button">Inizia ora</a>
-                    <a href="annunci.php" class="btn btn-outline-secondary btn-lg px-4" role="button">Cerca stanza</a>
+                    <a href="annunci.php" class="btn btn-dark btn-lg px-4" role="button">Cerca stanza</a>
                 </div>
             </div>
         </header>
@@ -46,7 +46,7 @@
             <div class="row align-items-center justify-content-center mx-4">
                 <div class="my-1 bg-light rounded-4 py-3 px-4 shadow-sm row align-items-center">
                     <div class="col-md-8">
-                        <h4 id="ultime_news" class="pt-2">Ultime Novità</h4>
+                        <h4 id="news-title" class="pt-2">Ultime Novità</h4>
                         <p class="col-md-0">Forum interno per ogni unità abitativa!</p>
                     </div>
                     <div class="col-md-4 text-end">
