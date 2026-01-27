@@ -55,7 +55,7 @@
                                         $badgeColor = match($utente['ruolo']) {
                                             'super_admin' => 'bg-dark',
                                             'admin_casa'  => 'bg-warning text-dark',
-                                            default       => 'bg-info text-white'
+                                            default       => 'bg-primary'
                                         };
                                         $ruoloLeggibile = ucwords(str_replace('_', ' ', $utente['ruolo']));
                                     ?>
