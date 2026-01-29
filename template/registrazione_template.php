@@ -10,6 +10,12 @@
                     </div>
                 <?php endif; ?>
 
+                <?php if(isset($templateParams["errore_registrazione"])): ?>
+                    <div style="background-color: #f8d7da; color: #721c24; padding: 15px; margin-bottom: 20px; border: 1px solid #f5c6cb; border-radius: 4px;">
+                        <strong>Attenzione!</strong> <?php echo $templateParams["errore_registrazione"]; ?>
+                    </div>
+                <?php endif; ?>
+
                 <form method="POST" action="registrazione.php">
                     
                     <h5 class="fw-bold mb-3 text-secondary">Dati Personali</h5>

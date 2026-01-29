@@ -4,14 +4,15 @@
         <p class="text-muted">Trova la tua prossima casa o il coinquilino ideale in pochi click.</p>
     </div>
 
-    <!-- SEZIONE FILTRI (sempre al top come noi) -->
+    <!-- SEZIONE FILTRI -->
     <section class="filters mb-5">
         <div class="card shadow-sm border-0">
             <div class="card-body p-4">
                 <h5 class="fw-bold mb-3">🔍 Filtra la ricerca</h5>
                 <form id="form-filtri" class="row g-3" onsubmit="return false;">
                     <div class="col-12 mb-2">
-                         <input type="text" id="filtro-testo" class="form-control" placeholder="Cosa cerchi?" aria-label="Cerca annunci">
+                        <label for="filtro-testo" class="visually-hidden">Cosa cerchi?</label>
+                        <input type="text" id="filtro-testo" class="form-control" placeholder="Cosa cerchi?" ...>
                     </div>
                     <div class="col-md-6">
                         <label for="filtro-dove" class="form-label small fw-bold">Dove</label>
@@ -112,6 +113,38 @@
                                 </div>
                                 <button type="submit" class="btn btn-success w-100 fw-bold py-2 shadow-sm">Invia Candidatura 💅</button>
                             </form>
+                            <hr class="my-4">
+<div class="d-flex justify-content-between align-items-center">
+    <p class="small text-muted mb-0">Qualcosa non va? Aiutaci a mantenere la community sicura.</p>
+    <button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="collapse" data-bs-target="#report-<?php echo $annuncio['id_annuncio']; ?>">
+        Segnala Annuncio 🚩
+    </button>
+</div>
+
+<div class="collapse mt-3" id="report-<?php echo $annuncio['id_annuncio']; ?>">
+    <div class="card card-body border-danger bg-light">
+        <form action="invia_segnalazione.php" method="POST">
+            <input type="hidden" name="id_annuncio" value="<?php echo $annuncio['id_annuncio']; ?>">
+            <input type="hidden" name="id_utente_segnalato" value="<?php echo $annuncio['id_utente']; ?>"> 
+            
+            <div class="mb-3">
+                <label for="motivo-<?php echo $annuncio['id_annuncio']; ?>" class="form-label fw-bold small">Perché stai segnalando questo annuncio?</label>
+                <select id="motivo-<?php echo $annuncio['id_annuncio']; ?>" name="motivo" class="form-select form-select-sm" required>
+                    <option value="" selected disabled>Scegli un motivo...</option>
+                    <option value="spam">Spam o Truffa</option>
+                    <option value="inappropriato">Contenuto Inappropriato</option>
+                    <option value="falso">Informazioni False</option>
+                    <option value="altro">Altro...</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="desc-<?php echo $annuncio['id_annuncio']; ?>" class="visually-hidden">Dettagli segnalazione</label>
+                <textarea id="desc-<?php echo $annuncio['id_annuncio']; ?>" name="descrizione" class="form-control form-control-sm" rows="2" placeholder="Aggiungi dettagli (opzionale)"></textarea>
+            </div>
+            <button type="submit" class="btn btn-danger btn-sm w-100 shadow-sm">Invia Segnalazione 💅</button>
+        </form>
+    </div>
+</div>
                         </div>
                     </div>
                 </div>
