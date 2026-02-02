@@ -14,7 +14,7 @@ $id_casa = $_SESSION["id_casa"] ?? null;
 
 // Unione ad una casa
 if(isset($_POST["azione"]) && $_POST["azione"] == "unisciti_casa" && isset($_POST["codice_invito"])){
-    $codice = htmlspecialchars($_POST["codice_invito"]);
+    $codice = ($_POST["codice_invito"]);
     $nuovo_id_casa = $dbh->joinHouseWithCode($id_utente, $codice);
     
     if($nuovo_id_casa){
@@ -60,10 +60,10 @@ if(isset($_POST["azione"]) && $_POST["azione"] == "inserisci_annuncio"){
     $user = $dbh->getUserById($id_utente);
     if($user["ruolo"] === "admin_casa") {
         $dbh->insertAnnuncio(
-            htmlspecialchars($_POST["titolo"]),
-            htmlspecialchars($_POST["descrizione"]),
+            ($_POST["titolo"]),
+            ($_POST["descrizione"]),
             $_POST["prezzo"],
-            htmlspecialchars($_POST["luogo"]),
+            ($_POST["luogo"]),
             $id_utente,
             $id_casa
         );
@@ -75,8 +75,8 @@ if(isset($_POST["azione"]) && $_POST["azione"] == "inserisci_annuncio"){
 // Aggiornamento dati Casa (Nome e Codice)
 if(isset($_POST["azione"]) && $_POST["azione"] == "aggiorna_casa"){
     if($_SESSION["ruolo"] === "admin_casa" && isset($_SESSION["id_casa"])){
-        $nuovo_nome = htmlspecialchars($_POST["nome_casa"]);
-        $nuovo_codice = strtoupper(htmlspecialchars($_POST["codice_invito"]));
+        $nuovo_nome = $_POST["nome_casa"];
+        $nuovo_codice = strtoupper($_POST["codice_invito"]);
         
         if($dbh->updateHouse($_SESSION["id_casa"], $nuovo_nome, $nuovo_codice)){
             header("location: dashboard.php?msg=casa_aggiornata");
@@ -87,8 +87,16 @@ if(isset($_POST["azione"]) && $_POST["azione"] == "aggiorna_casa"){
     }
 }
 
-// RECUPERO DATI PER IL TEMPLATE
-// Nota: getUserById ora deve fare la JOIN con la tabella case come visto prima
+// --- GESTIONE FORUM CASA ---
+if(isset($_POST["azione"]) && $_POST["azione"] == "invia_messaggio_forum") {
+    $testo = $_POST["testo"];
+    $is_anonimo = isset($_POST["is_anonimo"]) ? 1 : 0;
+    $parent_id = !empty($_POST["parent_id"]) ? $_POST["parent_id"] : null;
+    $dbh->insertMessaggioCasa($id_casa, $id_utente, $testo, $is_anonimo, $parent_id);
+    header("location: dashboard.php#forum-casa");
+    exit();
+}
+
 $templateParams["utente"] = $dbh->getUserById($id_utente);
 
 // Se l'utente non ha una casa, non carichiamo il resto dei dati
@@ -98,7 +106,7 @@ if ($id_casa) {
     $templateParams["prossimo_turno"] = $dbh->getNextCleaningTurn($id_casa);
     $templateParams["turni_pulizie"] = $dbh->getTurniMeseSuccessivo($id_casa);
     $templateParams["coinquilini_casa"] = $dbh->getCoinquilini($id_casa);
-
+    $templateParams["messaggi_forum"] = $dbh->getMessaggiForum($id_casa);
 }
 
 $templateParams["titolo"] = "CoHappy - Dashboard";
