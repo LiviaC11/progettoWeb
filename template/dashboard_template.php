@@ -129,67 +129,77 @@
             </div>
         </div>
 
-        <!-- SEZIONE TABELLA GESTIONE ANNUNCI -->
-        <div class="row mt-5">
+        <div id="forum-casa" class="row mt-5">
             <div class="col-12">
                 <div class="card shadow-sm border-0 p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="fw-bold mb-0">Gestione Annunci Casa</h4>
-                        <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
-                            <button type="button" class="btn btn-success fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNuovoAnnuncio">
-                                + Nuovo Annuncio
-                            </button>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <?php if(count($templateParams["miei_annunci"]) > 0): ?>
-                        <div class="table-responsive">
-                            <table class="table align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Foto</th>
-                                        <th>Titolo</th>
-                                        <th>Città</th>
-                                        <th>Prezzo</th>
-                                        <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
-                                            <th class="text-end">Azioni</th>
-                                        <?php endif; ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($templateParams["miei_annunci"] as $annuncio): ?>
-                                        <tr>
-                                            <!-- ANTEPRIMA FOTO AGGIUNTA -->
-                                            <td>
-                                                <img src="<?php echo !empty($annuncio['immagine']) ? htmlspecialchars($annuncio['immagine']) : 'img/nophoto.png'; ?>" 
-                                                     alt="" class="rounded border shadow-sm" 
-                                                     style="width: 50px; height: 50px; object-fit: cover;">
-                                            </td>
-                                            <td class="fw-bold"><?php echo htmlspecialchars($annuncio["titolo"]); ?></td>
-                                            <td><?php echo htmlspecialchars($annuncio["luogo"]); ?></td>
-                                            <td><span class="badge bg-light text-dark"><?php echo number_format($annuncio["prezzo"], 2); ?>€</span></td>
-                                            <?php if($templateParams["utente"]["ruolo"] === "admin_casa"): ?>
-                                                <td class="text-end">
-                                                    <div class="d-flex justify-content-end gap-2">
-                                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalModificaAnnuncio<?php echo $annuncio['id_annuncio']; ?>">
-                                                            <i class="bi bi-pencil"></i> Modifica
-                                                        </button>
-                                                        <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" 
-                                                           class="btn btn-sm btn-outline-danger" 
-                                                           onclick="return confirm('Sei sicuro di voler eliminare questo annuncio?')">
-                                                            <i class="bi bi-trash"></i> Elimina
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            <?php endif; ?>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
+                    <h4 class="fw-bold mb-4">🏠 Bacheca della Casa</h4>
+
+                    <form action="dashboard.php" method="POST" class="mb-5 bg-light p-3 rounded shadow-sm border">
+                        <input type="hidden" name="azione" value="invia_messaggio_forum">
+                        <div class="mb-3">
+                            <label for="testo_msg" class="form-label fw-bold small">Scrivi un messaggio ai tuoi coinquilini</label>
+                            <textarea id="testo_msg" name="testo" class="form-control" rows="2" placeholder="Cosa vuoi dire a tutti?" required></textarea>
                         </div>
-                    <?php else: ?>
-                        <p class="text-muted">Non ci sono annunci creati per questa abitazione.</p>
-                    <?php endif; ?>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="is_anonimo" id="anonimoCheck">
+                                <label class="form-check-label small text-muted" for="anonimoCheck">Invia come anonimo 👤</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary fw-bold px-4">Invia Messaggio</button>
+                        </div>
+                    </form>
+
+                    <div class="forum-container" style="max-height: 600px; overflow-y: auto; padding-right: 10px;">
+                        <?php 
+                        $principali = array_filter($templateParams["messaggi_forum"], fn($m) => is_null($m['parent_id']));
+                        $risposte = array_filter($templateParams["messaggi_forum"], fn($m) => !is_null($m['parent_id']));
+
+                        if(empty($principali)): ?>
+                            <p class="text-center text-muted py-4">Nessun messaggio in bacheca. Sii il primo a scrivere! ✨</p>
+                        <?php else: 
+                            foreach($principali as $msg): 
+                                $autore = $msg['is_anonimo'] ? "Anonimo" : $msg['nome'] . " " . $msg['cognome'];
+                        ?>
+                            <div class="card mb-4 border-0 shadow-sm bg-white">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge bg-secondary me-2"><?php echo $autore; ?></span>
+                                        <small class="text-muted"><?php echo date("d/m H:i", strtotime($msg['data_invio'])); ?></small>
+                                    </div>
+                                    <p class="mb-3"><?php echo htmlspecialchars($msg['testo']); ?></p>
+                                    
+                                    <button class="btn btn-sm btn-link text-decoration-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#reply-<?php echo $msg['id_messaggio']; ?>" aria-expanded="false" aria-controls="reply-<?php echo $msg['id_messaggio']; ?>">
+                                        <i class="bi bi-reply-fill"></i> Rispondi
+                                    </button>
+
+                                    <div class="collapse mt-3" id="reply-<?php echo $msg['id_messaggio']; ?>">
+                                        <form action="dashboard.php" method="POST" class="d-flex gap-2">
+                                            <input type="hidden" name="azione" value="invia_messaggio_forum">
+                                            <input type="hidden" name="parent_id" value="<?php echo $msg['id_messaggio']; ?>">
+                                            
+                                            <label for="input-reply-<?php echo $msg['id_messaggio']; ?>" class="visually-hidden">Scrivi una risposta al messaggio di <?php echo $autore; ?></label>
+                                            <input type="text" id="input-reply-<?php echo $msg['id_messaggio']; ?>" name="testo" class="form-control form-control-sm" placeholder="Scrivi una risposta..." required>
+                                            
+                                            <button type="submit" class="btn btn-sm btn-dark">Invia</button>
+                                        </form>
+                                    </div>
+
+                                    <div class="ms-4 mt-3 border-start ps-3">
+                                        <?php 
+                                        $mie_risposte = array_filter($risposte, fn($r) => $r['parent_id'] == $msg['id_messaggio']);
+                                        foreach(array_reverse($mie_risposte) as $rip): ?>
+                                            <div class="mb-2 p-2 bg-light rounded small">
+                                                <div class="fw-bold text-dark">
+                                                    <?php echo $rip['is_anonimo'] ? "Anonimo" : $rip['nome']; ?>:
+                                                </div>
+                                                <div class="text-muted"><?php echo htmlspecialchars($rip['testo']); ?></div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
