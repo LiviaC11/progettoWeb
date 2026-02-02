@@ -2,12 +2,13 @@
 class DatabaseHelper {
     private $db;
 
-    // stabilisce la connessione al database
+        // stabilisce la connessione al database
     public function __construct($servername, $username, $password, $dbname, $port) {
         $this->db = new mysqli($servername, $username, $password, $dbname, $port);
         if ($this->db->connect_error) {
-            die("Connessione fallita: " . $this->db->connect_error);
+            die("Connessione fallita: " . $this->db->connect_error); 
         }
+        $this->db->set_charset("utf8mb4");
     }
 
     // --- AUTENTIFICAZIONE ---
@@ -421,5 +422,26 @@ public function activateAnnuncio($id_annuncio) {
         $stmt->bind_param('ssi', $nome_casa, $codice_invito, $id_casa);
     return $stmt->execute();
 }
+
+    // Inserisce un messaggio nel forum della casa
+    public function insertMessaggioCasa($id_casa, $id_utente, $testo, $is_anonimo, $parent_id = null) {
+        $query = "INSERT INTO messaggi_casa (id_casa, id_utente, testo, is_anonimo, parent_id) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('iisii', $id_casa, $id_utente, $testo, $is_anonimo, $parent_id);
+        return $stmt->execute();
+    }
+
+    // Recupera i messaggi del forum ordinati per data
+    public function getMessaggiForum($id_casa) {
+        $query = "SELECT m.*, u.nome, u.cognome, u.foto_profilo 
+                FROM messaggi_casa m 
+                JOIN utenti u ON m.id_utente = u.id_utente 
+                WHERE m.id_casa = ? 
+                ORDER BY m.data_invio DESC";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id_casa);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 }
 ?>
