@@ -315,7 +315,7 @@
                         <?php echo $templateParams["utente"]["codice_invito"] ?? "CH-NON-DISP"; ?>
                     </span>
                     
-                    <button type="button" 
+                    <button type="button" aria-label="Copia codice invito"
                             class="btn btn-sm btn-link text-decoration-none btn-copy-code" 
                             data-code="<?php echo $templateParams["utente"]["codice_invito"]; ?>"
                             onclick="copyToClipboard()">
@@ -333,7 +333,7 @@
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title fw-bold">Gestione Casa e Coinquilini</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
                 

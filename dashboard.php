@@ -97,6 +97,20 @@ if(isset($_POST["azione"]) && $_POST["azione"] == "invia_messaggio_forum") {
     exit();
 }
 
+if (isset($_POST["azione"]) && $_POST["azione"] == "cancella_messaggio_forum") {
+    $id_messaggio = $_POST["id_messaggio"];
+    $id_utente = $_SESSION["id_utente"];
+
+    // 1. Connessione (se non è già attiva)
+    // $pdo = new PDO(...); 
+
+    // 2. Eliminiamo il messaggio (controllando che l'utente sia l'autore)
+    $stmt = $pdo->prepare("DELETE FROM messaggi_casa WHERE id_messaggio = ? AND id_utente = ?");
+    $stmt->execute([$id_messaggio, $id_utente]);
+
+    header("location: dashboard.php");
+    exit();
+}
 $templateParams["utente"] = $dbh->getUserById($id_utente);
 
 // Se l'utente non ha una casa, non carichiamo il resto dei dati
