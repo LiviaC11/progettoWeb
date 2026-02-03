@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 23, 2026 alle 18:33
+-- Creato il: Feb 03, 2026 alle 15:42
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -44,8 +44,8 @@ CREATE TABLE `annunci` (
 --
 
 INSERT INTO `annunci` (`id_annuncio`, `titolo`, `descrizione`, `prezzo`, `luogo`, `id_utente`, `immagine`, `data_pubblicazione`, `isActive`) VALUES
-(1, 'Cercasi 2 coinquilini', 'Casa a 10 min dalla stazione e dall&#039;università, posizione strategica. Sono disponibili due singole. La casa ha un piccolo cortile dove poter riporre le bici o altri mezzi di trasporto, c&#039;è una sala-cucina in comune molto grande ed un bagno da condividere al piano superiore, sempre al piano superiore si trovano 2 delle tre camere da letto totali. ', 250.00, '0', 2, 'img/nophoto.png', '2026-01-20 17:14:47', 0),
-(4, 'stanza singola', 'o\r\no\r\no\r\no', 150.00, 'Bologna', 6, 'img/img_69729e81bbfbb.png', '2026-01-22 22:02:41', 1);
+(4, 'stanza singola', 'o\r\no\r\no\r\no', 150.00, 'Bologna', 6, 'img/img_69729e81bbfbb.png', '2026-01-22 22:02:41', 1),
+(6, 'Villa con 5 camere', 'Casa a 10 min dalla stazione di Cesena ed a 10 dal Campus. Al momento sono occupate 3 stanze, quelle al piano superiore, la villa è a due piani ed in entrambi c&#039;è il bagno.', 160.00, 'Cesena', 8, 'img/img_6973b3fbda2d2.jpg', '2026-01-23 17:46:35', 1);
 
 -- --------------------------------------------------------
 
@@ -62,15 +62,6 @@ CREATE TABLE `candidature` (
   `foto` varchar(255) DEFAULT NULL,
   `data_invio` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dump dei dati per la tabella `candidature`
---
-
-INSERT INTO `candidature` (`id_candidatura`, `id_annuncio`, `nome`, `email`, `messaggio`, `foto`, `data_invio`) VALUES
-(1, 1, 'Lucia', 'liviacico91@gmail.com', 'ciao', 'img/nophoto.png', '2026-01-22 20:26:05'),
-(2, 1, 'Giuditta', 'giudi.blabla@libero.it', 'email di prova', 'img/nophoto.png', '2026-01-23 08:01:37'),
-(3, 1, 'Giuditta', 'giudi.blabla@libero.it', 'email di prova', 'img/nophoto.png', '2026-01-23 08:21:53');
 
 -- --------------------------------------------------------
 
@@ -109,6 +100,30 @@ CREATE TABLE `lista_spesa` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `messaggi_casa`
+--
+
+CREATE TABLE `messaggi_casa` (
+  `id_messaggio` int(11) NOT NULL,
+  `id_casa` int(11) NOT NULL,
+  `id_utente` int(11) NOT NULL,
+  `testo` text NOT NULL,
+  `is_anonimo` tinyint(1) DEFAULT 0,
+  `data_invio` timestamp NOT NULL DEFAULT current_timestamp(),
+  `parent_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `messaggi_casa`
+--
+
+INSERT INTO `messaggi_casa` (`id_messaggio`, `id_casa`, `id_utente`, `testo`, `is_anonimo`, `data_invio`, `parent_id`) VALUES
+(1, 2, 2, 'ciao a tutti, facciamo una cena?', 0, '2026-02-03 06:52:56', NULL),
+(2, 2, 4, 'Il weekend dell\'8 non torno dai miei, può andare?', 0, '2026-02-03 06:54:18', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `segnalazioni`
 --
 
@@ -122,6 +137,13 @@ CREATE TABLE `segnalazioni` (
   `stato` enum('aperta','in_lavorazione','risolta','archiviata') DEFAULT 'aperta',
   `data_segnalazione` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `segnalazioni`
+--
+
+INSERT INTO `segnalazioni` (`id_segnalazione`, `id_autore`, `id_annuncio_segnalato`, `id_utente_segnalato`, `motivo`, `descrizione`, `stato`, `data_segnalazione`) VALUES
+(1, 2, 4, 6, 'spam', 'ciao', 'risolta', '2026-01-25 09:58:20');
 
 -- --------------------------------------------------------
 
@@ -143,7 +165,11 @@ CREATE TABLE `spese` (
 --
 
 INSERT INTO `spese` (`id_spesa`, `descrizione`, `importo`, `data_spesa`, `chi_ha_pagato`, `id_casa`) VALUES
-(1, 'Televisore', 200.00, '2026-01-21', 2, 2);
+(1, 'Televisore', 200.00, '2026-01-21', 2, 2),
+(2, 'Detersivo piatti', 6.00, '2026-01-23', 8, 5),
+(3, 'Utenza Luce', 80.00, '2026-01-23', 8, 5),
+(4, 'televisore', 150.00, '2026-01-23', 9, 5),
+(5, 'GAtto', 1500.00, '2026-01-26', 2, 2);
 
 -- --------------------------------------------------------
 
@@ -196,10 +222,13 @@ CREATE TABLE `utenti` (
 INSERT INTO `utenti` (`id_utente`, `nome`, `cognome`, `email`, `password`, `ruolo`, `foto_profilo`, `id_casa`, `punti`, `dataIscrizione`, `token_scadenza`, `recovery_token`) VALUES
 (2, 'Margherita', 'Bianchi', 'marghe.bianchi@libero.it', '$2y$10$oO.UDFC0yO5zgIZ/hbPX2eE1BrBwX4kkOtt.y9ejqqqU2zQtY64Li', 'admin_casa', 'default_user.png', 2, 0, '2026-01-20', NULL, NULL),
 (4, 'Marco', 'Marchi', 'marco.marchi@libero.it', '$2y$10$7iiiMAvYLAMD/EZXO0Dki.OqoAMYEPZSSznYtO..ONKQxAJ3g6orm', 'studente', 'default_user.png', 2, 0, '2026-01-21', NULL, NULL),
-(5, 'Lu', 'Lulu', 'lu.lulu@libero.it', '$2y$10$GT1Vbm6ajYkgK4AbXZ8XB.nPT9OAoJIhfNwnrWFZpNaB6V8Gl/ub6', 'studente', 'default_user.png', 2, 0, '2026-01-22', NULL, NULL),
+(5, 'Lu', 'Lulu', 'lu.lulu@libero.it', '$2y$10$GT1Vbm6ajYkgK4AbXZ8XB.nPT9OAoJIhfNwnrWFZpNaB6V8Gl/ub6', 'studente', 'default_user.png', NULL, 0, '2026-01-22', NULL, NULL),
 (6, 'Carlo', 'Verdi', 'carlo.verdi@libero.it', '$2y$10$460pAHgfpnKV1yknWbIZQuZLqBzGh5KoobiI6pRooJ2WPu5pxpGLe', 'admin_casa', 'default_user.png', 4, 0, '2026-01-22', NULL, NULL),
 (7, 'Anna', 'Bianchi', 'anna.bianchi@libero.it', '$2y$10$OmPN5d9Lhtk1w5ZyUk5OP.FhuE3MP7quE97EfkJzthfY.ClezHFY6', 'studente', 'default_user.png', 4, 0, '2026-01-22', NULL, NULL),
-(8, 'Filippo', 'Nati', 'filo.nati@libero.it', '12345678', 'admin_casa', 'default_user.png', 5, 0, '2026-01-23', NULL, NULL);
+(8, 'Filippo', 'Nati', 'filo.nati@libero.it', '12345678', 'admin_casa', 'default_user.png', 5, 0, '2026-01-23', NULL, NULL),
+(9, 'Milo', 'Rossi', 'milo.rossi@libero.it', '$2y$10$2qm153T6VbcptKVcHZS5..h75DUXaPhfiP/aDqT39tY62hlrKSLSC', 'studente', 'default_user.png', 5, 0, '2026-01-23', NULL, NULL),
+(10, 'Susanna', 'Panna', 'susa.panna@libero.it', '$2y$10$fH95SmEFWzQLgMMBkHYLF.ce1/efiCnmidGUyvtQj9H8VrS5cxt.6', 'studente', 'default_user.png', 5, 0, '2026-01-23', NULL, NULL),
+(11, 'Super', 'Admin', 'superadmin@gmail.com', 'Pass123', 'super_admin', 'default_user.png', NULL, 0, '2026-01-26', NULL, NULL);
 
 --
 -- Indici per le tabelle scaricate
@@ -231,6 +260,14 @@ ALTER TABLE `case`
 --
 ALTER TABLE `lista_spesa`
   ADD PRIMARY KEY (`id_prodotto`);
+
+--
+-- Indici per le tabelle `messaggi_casa`
+--
+ALTER TABLE `messaggi_casa`
+  ADD PRIMARY KEY (`id_messaggio`),
+  ADD KEY `fk_msg_casa` (`id_casa`),
+  ADD KEY `fk_msg_utente` (`id_utente`);
 
 --
 -- Indici per le tabelle `segnalazioni`
@@ -273,7 +310,7 @@ ALTER TABLE `utenti`
 -- AUTO_INCREMENT per la tabella `annunci`
 --
 ALTER TABLE `annunci`
-  MODIFY `id_annuncio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_annuncio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT per la tabella `candidature`
@@ -294,16 +331,22 @@ ALTER TABLE `lista_spesa`
   MODIFY `id_prodotto` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT per la tabella `messaggi_casa`
+--
+ALTER TABLE `messaggi_casa`
+  MODIFY `id_messaggio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT per la tabella `segnalazioni`
 --
 ALTER TABLE `segnalazioni`
-  MODIFY `id_segnalazione` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_segnalazione` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT per la tabella `spese`
 --
 ALTER TABLE `spese`
-  MODIFY `id_spesa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_spesa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT per la tabella `turni_pulizie`
@@ -315,7 +358,7 @@ ALTER TABLE `turni_pulizie`
 -- AUTO_INCREMENT per la tabella `utenti`
 --
 ALTER TABLE `utenti`
-  MODIFY `id_utente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_utente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Limiti per le tabelle scaricate
@@ -332,6 +375,13 @@ ALTER TABLE `annunci`
 --
 ALTER TABLE `candidature`
   ADD CONSTRAINT `fk_annuncio` FOREIGN KEY (`id_annuncio`) REFERENCES `annunci` (`id_annuncio`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Limiti per la tabella `messaggi_casa`
+--
+ALTER TABLE `messaggi_casa`
+  ADD CONSTRAINT `fk_msg_casa` FOREIGN KEY (`id_casa`) REFERENCES `case` (`id_casa`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_msg_utente` FOREIGN KEY (`id_utente`) REFERENCES `utenti` (`id_utente`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `segnalazioni`

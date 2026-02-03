@@ -43,17 +43,17 @@
                  data-prezzo="<?php echo $annuncio['prezzo']; ?>"
                  data-luogo="<?php echo strtolower(htmlspecialchars($annuncio['luogo'])); ?>">
                  
-                <div class="card h-100 shadow-sm border-0 overflow-hidden">
+                <div class="card h-100 shadow-sm border-0 overflow-hidden d-flex flex-column"> <!-- /*d-flex flex-column */LIVIA -->
                     <img src="<?php echo $percorsoImmagine; ?>" class="card-img-top" alt="Foto alloggio" style="height: 220px; object-fit: cover;">
-                    <div class="card-body p-4">
+                    <div class="card-body p-4 d-flex flex-column">  <!-- /*d-flex flex-column */LIVIA -->
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="fw-bold mb-0"><?php echo htmlspecialchars($annuncio['titolo']); ?></h5>
+                            <h5 class="fw-bold mb-0 text-truncate" style="max-width: 70%;"><?php echo htmlspecialchars($annuncio['titolo']); ?></h5> <!-- /*text-truncate" style="max-width: 70%;" */LIVIA -->  
                             <span class="badge bg-success px-3 py-2"><?php echo number_format($annuncio['prezzo'], 2); ?>€</span>
                         </div>
                         <div class="text-muted small mb-2">
                             <i class="bi bi-geo-alt-fill text-danger"></i> <?php echo htmlspecialchars($annuncio['luogo']); ?>
                         </div>
-                        <p class="card-text text-muted small mb-4 text-truncate-2">
+                        <p class="card-text text-muted small mb-4" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; min-height: 4.5em;"> <!--<p class="card-text text-muted small mb-4 text-truncate-2">  PRIMA C'ERA QUESTO-->
                             <?php echo htmlspecialchars($annuncio['descrizione']); ?>
                         </p>
                         <button class="btn btn-outline-dark w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#modal-<?php echo $annuncio['id_annuncio']; ?>">
