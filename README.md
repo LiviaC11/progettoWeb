@@ -56,22 +56,14 @@ Il sistema distingue tre tipologie principali di utenti:
 
 ---
 
-## 💡 Proposte di Sviluppo & Effetto WOW (To Do / In Discussione)
+## 💡 Proposte di Sviluppo 
 
-Idee aggiuntive per migliorare l'engagement e l'accessibilità (Target: 4/4 punti Design/WOW).
+Idee aggiuntive per migliorare l'engagement e l'accessibilità.
 
-1.  **Gamification delle Pulizie 🏆**
-    * Trasformare i turni in una classifica mensile. Assegnazione punti per task completati puntualmente.
-    * *Obiettivo:* Incentivare la collaborazione tramite competizione amichevole.
-
-2.  **Gestione Spese "Smart Split" 💸**
+1.  **Gestione Spese "Smart Split" 💸**
     * Calcolo automatico della quota pro-capite all'inserimento di una spesa (es. Bolletta 100€ -> 33€ a testa). Visualizzazione saldo debiti/crediti in dashboard.
     * *Obiettivo:* Utilità pratica avanzata per la gestione contabile.
 
-3.  **Matching Avanzato Annunci ❤️**
+2.  **Matching Avanzato Annunci ❤️**
     * Inclusione di "Tag Lifestyle" negli annunci (es. #Fumatore, #AnimaliAmmessi, #StudioIntenso) per filtrare la compatibilità.
     * *Obiettivo:* Migliorare la UX nella ricerca coinquilini.
-
-4.  **Dark Mode Automatica 🌙**
-    * Rilevamento delle preferenze di sistema dell'utente tramite JS per switch automatico del tema grafico.
-    * *Obiettivo:* Design inclusivo e moderno.# progettoWeb
