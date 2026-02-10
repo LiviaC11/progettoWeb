@@ -23,12 +23,14 @@
                 $is_active = (int)$annuncio['isActive'];
                 $statusBadge = $is_active ? 'bg-success' : 'bg-dark';
                 $statusText = $is_active ? 'Online' : 'Nascosto';
-                $numCandidature = count($annuncio['candidature']);
+                $numCandidature = isset($annuncio['candidature']) ? count($annuncio['candidature']) : 0;
             ?>
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100 border-0 shadow-sm overflow-hidden <?php echo $is_active ? '' : 'annuncio-nascosto'; ?>">
                         <div class="position-relative">
-                            <img src="<?php echo !empty($annuncio['immagine']) ? htmlspecialchars($annuncio['immagine']) : 'img/nophoto.png'; ?>" 
+                            <!-- FIX: Uso 'immagine' o 'foto' in base a cosa arriva dal DB, con fallback -->
+                            <?php $imgSrc = !empty($annuncio['immagine']) ? $annuncio['immagine'] : (!empty($annuncio['foto']) ? $annuncio['foto'] : 'img/nophoto.png'); ?>
+                            <img src="<?php echo htmlspecialchars($imgSrc); ?>" 
                                  class="card-img-top" alt="" style="height: 200px; object-fit: cover;">
                             <span class="badge <?php echo $statusBadge; ?> position-absolute top-0 end-0 m-3 shadow-sm px-3 py-2">
                                 <?php echo $statusText; ?>
@@ -41,12 +43,14 @@
                                 <span class="text-primary fw-bold"><?php echo number_format($annuncio['prezzo'], 2); ?>€</span>
                             </div>
                             <?php if($is_active): ?> 
-                            <p class="text-muted small mb-3"><i class="bi bi-geo-alt"></i> <?php echo htmlspecialchars($annuncio['luogo']); ?></p>
+                                <p class="text-muted small mb-3"><i class="bi bi-geo-alt"></i> <?php echo htmlspecialchars($annuncio['luogo']); ?></p>
                                 <button class="btn btn-dark w-100 mb-3 fw-bold position-relative" data-bs-toggle="modal" data-bs-target="#modalCandidature<?php echo $annuncio['id_annuncio']; ?>">
-                                <i class="bi bi-people-fill"></i> Vedi Candidature <?php if($numCandidature > 0): ?>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><?php echo $numCandidature; ?></span>
-                                <?php endif; ?>
-                                </button><?php endif; ?>
+                                    <i class="bi bi-people-fill"></i> Vedi Candidature 
+                                    <?php if($numCandidature > 0): ?>
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><?php echo $numCandidature; ?></span>
+                                    <?php endif; ?>
+                                </button>
+                            <?php endif; ?>
                         </div>
 
                         <div class="card-footer bg-white border-top-0 pb-3 px-3">
@@ -55,30 +59,79 @@
                                     <div class="row g-2">
                                         <div class="col-6">
                                             <button class="btn btn-sm btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modalModifica<?php echo $annuncio['id_annuncio']; ?>">
-                                            <i class="bi bi-pencil"></i> Modifica
+                                                <i class="bi bi-pencil"></i> Modifica
                                             </button>
                                         </div>
-                            <div class="col-6">
-                            <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-outline-danger w-100" onclick="return confirm('Sicura di voler eliminare?')"><i class="bi bi-trash"></i> Elimina
-                            </a>
+                                        <div class="col-6">
+                                            <a href="processa_annuncio.php?azione=elimina&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-outline-danger w-100" onclick="return confirm('Sicura di voler eliminare?')"><i class="bi bi-trash"></i> Elimina</a>
+                                        </div>
+                                    </div>
+                                    <a href="processa_annuncio.php?azione=disattiva&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-warning w-100 fw-bold">Nascondi</a>
+                                <?php else: ?>
+                                    <a href="processa_annuncio.php?azione=attiva&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-success w-100 fw-bold">Mostra</a>
+                                <?php endif; ?>
                             </div>
-                        </div>
-                        <a href="processa_annuncio.php?azione=disattiva&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-warning w-100 fw-bold">Nascondi</a>
-            <?php else: ?>
-                        <a href="processa_annuncio.php?azione=attiva&id=<?php echo $annuncio['id_annuncio']; ?>" class="btn btn-sm btn-success w-100 fw-bold">Mostra</a>
-            <?php endif; ?>
-
                         </div>
                     </div>
                 </div>
-            </div>
 
-                <!-- MODALE MODIFICA  -->
+                <!-- MODALE MODIFICA (Ora riempito e funzionante) -->
                 <div class="modal fade" id="modalModifica<?php echo $annuncio['id_annuncio']; ?>" tabindex="-1" aria-hidden="true">
-                    <!-- ... (contenuto modale modifica) ... -->
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 shadow">
+                            <form action="processa_annuncio.php" method="POST" enctype="multipart/form-data">
+                                <div class="modal-header border-0 pb-0">
+                                    <h5 class="modal-title fw-bold">Modifica Annuncio</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Input nascosti fondamentali -->
+                                    <input type="hidden" name="action" value="modifica">
+                                    <input type="hidden" name="id_annuncio" value="<?php echo $annuncio['id_annuncio']; ?>">
+
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-uppercase text-muted">Titolo</label>
+                                        <input type="text" class="form-control" name="titolo" value="<?php echo htmlspecialchars($annuncio['titolo']); ?>" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-uppercase text-muted">Descrizione</label>
+                                        <textarea class="form-control" name="descrizione" rows="4" required><?php echo htmlspecialchars($annuncio['descrizione']); ?></textarea>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <label class="form-label small fw-bold text-uppercase text-muted">Prezzo (€)</label>
+                                            <input type="number" step="0.01" class="form-control" name="prezzo" value="<?php echo $annuncio['prezzo']; ?>" required>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <label class="form-label small fw-bold text-uppercase text-muted">Luogo</label>
+                                            <input type="text" class="form-control" name="luogo" value="<?php echo htmlspecialchars($annuncio['luogo']); ?>" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Anteprima immagine attuale -->
+                                    <div class="mb-3 p-3 bg-light rounded">
+                                        <label class="form-label small fw-bold text-uppercase text-muted d-block">Foto Attuale</label>
+                                        <?php $imgSrcModal = !empty($annuncio['immagine']) ? $annuncio['immagine'] : (!empty($annuncio['foto']) ? $annuncio['foto'] : 'img/nophoto.png'); ?>
+                                        <img src="<?php echo htmlspecialchars($imgSrcModal); ?>" alt="Attuale" class="img-thumbnail" style="max-height: 100px;">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-uppercase text-muted">Cambia Foto (Opzionale)</label>
+                                        <input type="file" class="form-control" name="foto">
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0 pt-0">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annulla</button>
+                                    <button type="submit" class="btn btn-primary fw-bold px-4">Salva Modifiche</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- NUOVO MODALE CANDIDATURE 💌 -->
+                <!-- MODALE CANDIDATURE -->
                 <div class="modal fade" id="modalCandidature<?php echo $annuncio['id_annuncio']; ?>" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content border-0 shadow-lg">
